@@ -23,6 +23,14 @@ Meta-skill: fabrica otras skills de trading coherentes con el ecosistema del usu
 | cuentas-fondeo-prop | Retos de fondeo (prop firms) |
 | estrategia-ruptura-asiatica-oro | Ruptura del rango asiático en oro H1 (estado: backtest) |
 | scalping-micro-oro | Scalping M1 / muchas operaciones pequeñas (estado: DESCARTADA por spread) |
+| orb-apertura-nueva-york | ORB 9:30 ET (Nasdaq en observación, oro descartado) |
+| perfil-horario-mercados | Volatilidad por hora/día de oro y Nasdaq (hora Monterrey) |
+| gestion-operacion-abierta | BE, parciales, trailing: evidencia de que no tocar es mejor en la ruptura |
+| correlaciones-intermercado | Dólar, tasas, VIX y su efecto en oro/Nasdaq |
+| estructura-mercado-smc | Estructura, liquidez, BOS/CHoCH/FVG con definiciones medibles |
+| plan-de-trading-personal | Metas, estrategias activas, reglas y criterios para avanzar |
+| estrategia-rsi2-indices | RSI(2) diario en US500 (estado: backtest → demo) |
+| laboratorio-estrategias | Script multi-estrategia + registro de todo lo probado |
 
 Antes de crear, revisar `ls ~/.claude/skills ~/.claude/skills/synced/*/` por si ya existe algo parecido. Si existe, **proponer editar esa** en lugar de crear otra.
 
@@ -58,4 +66,4 @@ Antes de crear, revisar `ls ~/.claude/skills ~/.claude/skills/synced/*/` por si 
 Proponer en una línea; crear solo si acepta.
 
 ## Ideas de skills futuras
-estrategia-propia-<nombre>, indicador-<nombre>, sesion-asiatica-oro, correlaciones-intermercado, opciones-basico, cripto-basico, alertas-precio, plan-de-trading-personal.
+estrategia-propia-<nombre>, indicador-<nombre>, sesion-asiatica-oro, opciones-basico, cripto-basico, alertas-precio, ruptura-londres-oro, rsi2-us30-ger40.

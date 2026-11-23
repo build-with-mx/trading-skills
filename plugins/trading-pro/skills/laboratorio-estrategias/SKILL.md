@@ -78,6 +78,15 @@ Español, corto. Objetivo: encontrar ventajas **robustas**, no la mejor curva. R
 | ORB Nueva York M15 | Oro | 3 meses | mayoría negativa | ❌ |
 | Scalping M1 (4 señales) | Oro | 11 días | todas negativas, = azar | ❌ |
 
+## Efecto lunes (23-nov-2026)
+El Estacional marcó al S&P 500: +0.18% de media los lunes (t = 3.2). Prueba: comprar al cierre del viernes, salir al cierre del lunes, SL 2×ATR20, costo 2× spread:
+| Mercado | Lunes IS | Lunes OOS | Acierto | Otros días |
+|---|---|---|---|---|
+| US500 | +0.04R | +0.08R | 62% | entre −0.03R y +0.02R |
+| GER40 | +0.01R | +0.04R | 55% | entre −0.02R y +0.03R |
+| Oro / ETH | sin efecto | | | |
+**Veredicto: real pero delgado.** El swap triple del fin de semana (~0.02R en US500) lo deja en ~+0.035R por operación. No se opera solo; queda **en observación** (posible filtro: preferir entradas largas de RSI2/IBS en viernes).
+
 ## Ideas en cola
 Ruptura de Londres en oro (08:00 UTC) · RSI(2) en GBPUSD y USOIL a demo cuando haya margen de riesgo · Donchian en plata/BTC si la cuenta crece · Donchian en cartera (oro + índices) · filtro de volatilidad (ATR alto/bajo) sobre la ruptura asiática · días posteriores a gaps del lunes.
 

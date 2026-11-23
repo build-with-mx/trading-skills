@@ -49,6 +49,14 @@ Donchian en velas de 4 h (5 años): 100% de variantes OK en IS y OOS en oro, ETH
 ## Cuenta y riesgo actuales
 - Demo MT5 **10076749** ($100k): riesgo **0.5%** por operación (sustituye al 1% de las fórmulas de lote), máx. 2% abierto total entre todas las estrategias.
 
+## Abogado del diablo (23-nov-2026, datos reales de Axi)
+| Mercado | Ops | Expectativa | Costos ×2 | Sin las 5 mejores | Periodos + | Prob. de suerte | Veredicto |
+|---|---|---|---|---|---|---|---|
+| Oro | 38 | +0.31R | +0.30R | −0.34R | 3/4 | 16% | DUDOSA |
+| ETH | 54 | +0.24R | +0.23R | −0.19R | 4/4 | 17% | DUDOSA |
+- Depender de pocas operaciones enormes es **normal en tendencia** (por eso nunca lleva TP), pero con tan pocas operaciones hay 16–17% de probabilidad de que la ventaja sea suerte.
+- Decisión: se mantiene en la demo con su riesgo normal; el Profesor la vigila (≥ 20 ops en vivo). En un reto de fondeo tiene **prioridad baja** frente a ruptura asiática, RSI(2) e IBS (las tres **RESISTEN**).
+
 ## Reglas de seguridad (heredadas)
 - Riesgo máx. 1% por operación, 2% abierto total, stop diario 3%. Siempre con Stop Loss.
 - Cuentas reales: nunca operar sin confirmación explícita del usuario en ese mensaje.

@@ -66,6 +66,16 @@ Promesas de ganancias garantizadas, reglas ocultas o ambiguas sobre pagos, sin h
 ### VPS (para que Aurum funcione 24 h)
 - Axi no da VPS gratis: **acredita hasta ~$35–36 al mes** del VPS de terceros (ForexVPS / CNS) a quien opere **más de 20 lotes al mes** (fuente: página de VPS de Axi). Planes desde ~$35/mes. Alternativa: VPS Windows genérico más barato (verificar precio).
 
+## Prueba general con el equipo Aurum (23-nov-2026)
+Simulación de 4 meses con velas reales (23 jul – 20 nov 2026): la demo maestra de $100k operó y el Copiador replicó en una cuenta de $5k.
+| Riesgo en $5k | Señales copiadas | Resultado | Peor caída |
+|---|---|---|---|
+| 0.5% | 56 de 69 | +4.2% | 2.2% |
+| **1%** | **67 de 69** | **+7.6%** | **4.2%** |
+- Con 0.5% en $5k, el **lote mínimo del oro (0.01)** arriesga más de lo permitido en 1 de cada 5 señales: se pierden operaciones. Usar **1%** y dejar que el Estratega de metas lo baje a 0.5% cerca del objetivo o del límite.
+- Supervisor de fondeo: bloquea entradas al 50% de cualquier límite y **cierra todo al 80%**, antes de que la empresa descalifique.
+- Es un solo periodo de 4 meses: el resultado puede ser mejor o peor. Pasar el checklist del prompt maestro antes de comprar.
+
 ## Reglas de seguridad (heredadas)
 - Riesgo máx. 1% por operación, 2% abierto total, stop diario 3%. Siempre con Stop Loss.
 - Cuentas reales: nunca operar sin confirmación explícita del usuario en ese mensaje.

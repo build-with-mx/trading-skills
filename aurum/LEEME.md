@@ -1,4 +1,4 @@
-# Aurum 1.4 — equipo de bots de trading
+# Aurum 1.5 — equipo de bots de trading
 
 Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el filtro anti-suerte:
 
@@ -47,6 +47,14 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 | **Respaldo** 💾 | `respaldo.py` | Cada día (23:00 UTC) guarda la memoria del equipo en `respaldos/` (últimos 14 días). Nunca incluye `telegram.json` ni tus archivos AUTORIZO. Opcional: otra copia en Google Drive/OneDrive (`respaldo.carpeta_extra`) |
 | **Panel** 📊 | `panel.py` | Genera `panel.html` cada minuto: ábrelo con doble clic y verás cuenta, posiciones, resultado por estrategia, metas, salud de los bots, mercados y candidatas. Se actualiza solo |
 
+## El equipo (fase 6: aprendizaje)
+| Bot | Archivo | Qué hace |
+|---|---|---|
+| **Auditor** 🧾 | `auditor.py` | Cada hora, sin confiar en nadie: config dentro de los topes (1% / 3% / 3%), cada posición con SL, riesgo ≤ 1.5× lo permitido, sin duplicadas ni posiciones de origen desconocido, deslizamiento alto. Solo avisa de hallazgos nuevos |
+| **Archivista** 📚 | `archivista.py` | Guarda el contexto de cada apertura (régimen, volatilidad, VIX, precaución, día y hora) en `aurum.db` y escribe `diario_operaciones.md` |
+| **Profesor** 🎓 | `profesor.py` | Cada domingo: vivo vs backtest con margen de error ("ventaja confirmada", "vigilar", "deterioro probable"), qué contexto le sienta mejor a cada estrategia, y lo guarda en `profesor_lecciones.md`. Propone, no cambia nada solo |
+| **Abogado del diablo** 😈 | `abogado_diablo.py` | Cada domingo intenta romper las estrategias activas y las candidatas: costos ×2 y ×3, sin las 5 mejores operaciones, parámetros vecinos, 4 periodos, bootstrap. Veredicto RESISTE / DUDOSA / FRÁGIL en `abogado_reporte.md` |
+
 ### Cómo conectar una cuenta de fondeo (cuando la compres)
 1. Instala el **MetaTrader 5 de la empresa de fondeo** (es un segundo programa, aparte del de Axi) e inicia sesión en el reto.
 2. Copia `copiador_ejemplo.json` como `copiador_fondeo1.json` y rellena: ruta del `terminal`, número de `cuenta`, nombres de los símbolos de esa empresa (`mapa_simbolos`), y las **reglas exactas** del reto en `fondeo` y `metas`.
@@ -71,7 +79,7 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 **No compartas `telegram.json` con nadie** (contiene la llave de tu bot).
 
 ## Arrancar
-Doble clic en **`INICIAR_TODO.bat`**: se abren 11 ventanas (Guardián, Minero, Contador, Vigía, Sombra, Explorador, Estratega, Mecánico, Respaldo, Panel y Aurum). La primera vez el Minero tarda ~1 minuto en llenar `datos.db` y el Explorador hará su primera búsqueda (unos minutos). Si alguno se cae, se reinicia solo a los 15 segundos. **Deja las ventanas abiertas** (puedes minimizarlas) y que la PC no se suspenda.
+Doble clic en **`INICIAR_TODO.bat`**: se abren 15 ventanas (Guardián, Minero, Contador, Vigía, Sombra, Explorador, Estratega, Mecánico, Respaldo, Panel, Auditor, Archivista, Profesor, Abogado del diablo y Aurum). La primera vez el Minero tarda ~1 minuto en llenar `datos.db` y el Explorador hará su primera búsqueda (unos minutos). Si alguno se cae, se reinicia solo a los 15 segundos. **Deja las ventanas abiertas** (puedes minimizarlas) y que la PC no se suspenda.
 (Manual: `python guardian.py`, `python contador.py`, `python aurum.py` en ventanas separadas.)
 
 ### Si el Guardián bloquea

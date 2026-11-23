@@ -1,5 +1,5 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "actualizado": "2026-11-23",
   "cuenta_permitida": 10076749,
   "solo_observar": false,
@@ -155,5 +155,9 @@
     "cerrar_fin_semana": false,
     "cerrar_antes_de_noticias_min": 0,
     "offset_dia_servidor_h": 2
+  },
+  "respaldo": {
+    "carpeta_extra": "",
+    "_nota": "Opcional: una carpeta de Google Drive/OneDrive en tu PC para guardar otra copia del respaldo diario."
   }
 }

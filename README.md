@@ -1,6 +1,6 @@
 # Trading Skills
 
-Plugin con 22 skills de trading (oro y Nasdaq, MT5 vía Axi).
+Plugin con 23 skills de trading (oro y Nasdaq, MT5 vía Axi).
 
 | Skill | Para qué |
 |---|---|
@@ -26,6 +26,7 @@ Plugin con 22 skills de trading (oro y Nasdaq, MT5 vía Axi).
 | estrategia-tendencia-donchian | Tendencia Donchian 20 en USDJPY y Ethereum |
 | enciclopedia-estrategias | Estrategias actuales con veredicto por datos |
 | simulador-portafolio-fondeo | Portafolio completo y probabilidad de pasar un reto |
+| estrategia-ibs-indices | IBS diario en Nasdaq y S&P 500 |
 
 ## Instalar en Claude Code
 ```

@@ -30,6 +30,9 @@ Español, corto. Estrategia de **pocas ganadoras grandes y muchas perdedoras peq
 
 Conclusión: la tendencia funciona en mercados con tendencias largas (yen, metales, cripto), no en índices de acciones ni en EUR/GBP/AUD.
 
+## Versión H4 (estudio 23-nov)
+Donchian en velas de 4 h (5 años): 100% de variantes OK en IS y OOS en oro, ETH y BTC (N=20-120, SL 2-3). **No se añade**: apuesta a la misma tendencia, mercado y dirección que la versión D1 → concentra riesgo en vez de diversificar. Candidata si se busca más frecuencia en una cuenta aparte.
+
 ## Advertencias
 - **Swap no incluido**: las posiciones duran semanas; en cripto el swap de CFD puede ser alto. Revisar el swap real en la demo y descontarlo.
 - Crypto cotiza el fin de semana: las señales del sábado/domingo se evalúan el domingo por la tarde.

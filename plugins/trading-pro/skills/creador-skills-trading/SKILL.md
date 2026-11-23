@@ -34,6 +34,7 @@ Meta-skill: fabrica otras skills de trading coherentes con el ecosistema del usu
 | estrategia-tendencia-donchian | Tendencia Donchian 20 diario en USDJPY y ETHUSD (estado: backtest → demo) |
 | enciclopedia-estrategias | Catálogo de estrategias actuales con veredicto por datos y fuentes |
 | simulador-portafolio-fondeo | Todas las estrategias juntas: rendimiento, caída y probabilidad de pasar un reto |
+| estrategia-ibs-indices | IBS diario en USTECH y US500 (estado: backtest → demo) |
 
 Antes de crear, revisar `ls ~/.claude/skills ~/.claude/skills/synced/*/` por si ya existe algo parecido. Si existe, **proponer editar esa** en lugar de crear otra.
 

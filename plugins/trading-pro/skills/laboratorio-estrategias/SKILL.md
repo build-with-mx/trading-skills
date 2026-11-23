@@ -32,6 +32,10 @@ Español, corto. Objetivo: encontrar ventajas **robustas**, no la mejor curva. R
 - Rupturas por sesión (megalab H1): rango asiático oro 64%; **Londres** oro 28%, GER40 38%, GBP/EUR/JPY ≤ 3%; **Nueva York** oro 10%, USTECH 27% → ❌.
 - Catálogo completo con veredictos y fuentes: skill `enciclopedia-estrategias`.
 
+### Estudio 2 (23-nov, 3:30 am)
+- **IBS** (0.2/0.7/SMA200/SL2): USTECH 100%, US500 67% → ✅ demo (`estrategia-ibs-indices`). Solo 19-26% de sus entradas coinciden con RSI(2) → operaciones nuevas. US30 IS≈0 y US2000 17% → ❌.
+- **Donchian H4**: 100% en oro/ETH/BTC, pero duplica la exposición de Donchian D1 → documentado, no añadido.
+
 ## Registro de pruebas (actualizar siempre)
 | Estrategia | Mercado | Datos | Resultado | Veredicto |
 |---|---|---|---|---|

@@ -10,8 +10,8 @@ Español, corto. Cada fila combina **(1) qué dice la evidencia publicada** y **
 ## Veredictos
 | Estrategia | Evidencia publicada | Nuestro test | Veredicto |
 |---|---|---|---|
-| **Tendencia (Donchian, Supertrend, MACD)** | Fuerte: base de los fondos CTA; funciona por horizonte medio/largo | Oro Donchian 100%, MACD 80%, squeeze 100%; ETH/BTC Donchian ~90%, Supertrend 80%+ ; **USDJPY 0%**, GBP/EUR/AUD/índices de acciones malos | ✅ en oro y cripto · ❌ en divisas e índices de acciones |
-| **Reversión RSI(2) / IBS en índices** | Media-fuerte: IBS estudiado (Pagonidis 2013); en vivo rinde ~la mitad que en backtest | RSI US500 91%, USTECH 85%; **IBS USTECH 100%**, US500 67%, US30 60% | ✅ en índices de EE.UU. · ❌ en oro, divisas |
+| **Tendencia (Donchian, Supertrend, MACD; D1 y H4)** | Fuerte: base de los fondos CTA; funciona por horizonte medio/largo | Oro Donchian 100%, MACD 80%, squeeze 100%; ETH/BTC Donchian ~90%, Supertrend 80%+ ; **USDJPY 0%**, GBP/EUR/AUD/índices de acciones malos | ✅ en oro y cripto · ❌ en divisas e índices de acciones |
+| **Reversión RSI(2) / IBS en índices** | Media-fuerte: IBS estudiado (Pagonidis 2013); en vivo rinde ~la mitad que en backtest | RSI US500 91%, USTECH 85%; **IBS USTECH 100%**, US500 67% (IBS añadido a la demo el 23-nov; 75-80% de sus entradas no coinciden con RSI2) | ✅ en índices de EE.UU. · ❌ en oro, divisas |
 | **Ruptura rango asiático** | Mixta (blogs con resultados inestables) | Oro 64% (config. activa: IS +0.24R, OOS +0.22R); GER40 14%, GBP/EUR/JPY < 10% | ✅ solo oro |
 | **Ruptura de Londres** (muy vendida) | Débil: tests de 10-18 años sin ventaja estable | Oro 28%, GER40 38%, GBP 2%, EUR 2%, JPY 3% | ❌ |
 | **Ruptura apertura Nueva York / ORB** | Débil-mixta | Oro 10%, USTECH 27%, EUR 11% | ❌ (Nasdaq en observación) |

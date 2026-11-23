@@ -75,6 +75,8 @@ def explorar(cfg):
             tareas += [("D1", s, f, p) for f, p in L.todas_las_grillas_d1()]
         else:
             tareas += [("H1", s, f, p) for f, p in L.grids_h1()]
+    if not tareas:
+        return [], 0.0, 0
     enviar(f"🔬 Explorador: empiezo a probar {len(tareas):,} variantes en {len(_DATOS)} series de datos.", "Explorador")
     with Pool(max(1, (os.cpu_count() or 2) - 1), initializer=_init, initargs=(universo,)) as pool:
         filas = pool.map(_probar, tareas, chunksize=25)
@@ -126,6 +128,10 @@ def main():
         if toca:
             cfg = json.load(open(RUTA_CONFIG, encoding="utf-8"))
             aprobadas, base, total = explorar(cfg)
+            if total == 0:  # el Minero aún no guardó datos: reintentar en 10 minutos
+                print("Explorador: todavía no hay velas en datos.db; reintento en 10 minutos.")
+                time.sleep(600)
+                continue
             cand = json.load(open(RUTA_CAND, encoding="utf-8")) if os.path.exists(RUTA_CAND) else []
             ids = {c["id"] for c in cand}
             nuevas = []

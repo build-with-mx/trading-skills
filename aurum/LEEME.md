@@ -93,7 +93,9 @@ Las estrategias nuevas usan **el mismo motor del laboratorio** con el que se val
 3. Descomprime esta carpeta `aurum` en tu PC (por ejemplo en el Escritorio).
 4. Abre **MetaTrader 5 de escritorio**, inicia sesión en la **demo 10076749** y pulsa el botón **"Algo Trading"** (debe quedar en verde).
 
-## Telegram (5 minutos, recomendado)
+## Telegram (OPCIONAL: solo si quieres avisos en tu celular)
+Sin Telegram todo funciona igual: los avisos salen en las ventanas de los bots y todo se ve en **`panel.html`** (ábrelo en tu navegador; se actualiza solo). Si no creas `telegram.json`, la Centralita ni siquiera arranca.
+
 1. En Telegram busca **@BotFather** → escribe `/newbot` → ponle nombre (p. ej. "Mi Aurum") → copia el **token** que te da.
 2. Abre el chat de tu nuevo bot y escríbele "hola".
 3. En la terminal, dentro de la carpeta aurum:  `python obtener_chat_id.py`  → pega el token. Se crea `telegram.json`.

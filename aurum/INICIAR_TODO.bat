@@ -20,7 +20,7 @@ start "Abogado del diablo" cmd /k iniciar_abogado_diablo.bat
 start "Estacional" cmd /k iniciar_estacional.bat
 start "Analista COT" cmd /k iniciar_analista_cot.bat
 start "Calendario de resultados" cmd /k iniciar_calendario_resultados.bat
-start "Centralita" cmd /k iniciar_centralita.bat
+if exist telegram.json start "Centralita" cmd /k iniciar_centralita.bat
 timeout /t 5 /nobreak >nul
 start "Aurum" cmd /k iniciar_aurum.bat
 echo Listo: Guardian, Minero, Contador, Vigia, Sombra, Explorador, Estratega, Mecanico, Respaldo, Panel, Auditor, Archivista, Profesor, Abogado del diablo, Estacional, Analista COT, Calendario de resultados, Centralita y Aurum en marcha. Abre panel.html para ver todo. Cuenta de fondeo: iniciar_fondeo.bat.

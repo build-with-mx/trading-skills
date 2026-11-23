@@ -48,3 +48,4 @@ Español, corto y directo. Las velas de Axi vienen en **UTC**; Monterrey = UTC-6
 
 ## Lecciones aprendidas
 - 2026-11-23 — Backtest inicial: robusta en oro, negativa en Nasdaq; ganancia concentrada en ventas con RR 2.
+- 2026-11-23 — Primera operación en demo: 1:00 MTY la vela tocó 3,637 pero cerró dentro del rango (falsa ruptura evitada por la regla de cierre); 7:00 MTY cerró en 3,654.51 → compra 0.30 @3661.53 (deslizamiento de $2: riesgo real 1.06%). La entrada a mercado en movimientos rápidos puede salir peor que el ask leído: dejar margen.

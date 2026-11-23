@@ -17,6 +17,7 @@ Español, corto. Cada fila combina **(1) qué dice la evidencia publicada** y **
 | **Ruptura de Londres** (muy vendida) | Débil: tests de 10-18 años sin ventaja estable | Oro 28%, GER40 38%, GBP 2%, EUR 2%, JPY 3% | ❌ |
 | **Ruptura apertura Nueva York / ORB** | Débil-mixta | Oro 10%, USTECH 27%, EUR 11% | ❌ (Nasdaq en observación) |
 | **ICT / SMC** (Silver Bullet, FVG, killzones, order blocks) | Muy débil: sin estudios independientes; un test FVG+killzone en GBPUSD 2016-2026 perdió −30% | Falsa ruptura asiática (barrida de liquidez) ❌ | ❌ como sistema; útil solo como lenguaje |
+| **"Muchas operaciones y cerrar con ganancia"** (sin SL; base de grid/martingala) | Muy popular en EAs; las prop firms la vigilan/prohíben | 1 posición por hora, 1 año H1: **100% de cierres en ganancia** pero pérdida flotante oculta de −$55k a −$380k y caída de hasta −$386k con 0.01/1 lote por posición → **quiebra la cuenta**. Con SL: −$100 a −$550/año en USDJPY (= azar) | ❌ (experimento en vivo en demo $5k con SL, ver plan) |
 | **Scalping M1** | El spread domina | Todas negativas, = azar | ❌ |
 | **Cambio de mes (turn of month)** | Efecto académico conocido en acciones | Oro 92% (sesgo alcista del periodo), GER40 62%, índices EE.UU. ≤ 42% | 🔎 observación |
 | **MACD en GER40** | — | 94% (pero Donchian en GER40 0%: contradictorio) | 🔎 observación |

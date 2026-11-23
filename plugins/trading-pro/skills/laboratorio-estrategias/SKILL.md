@@ -41,6 +41,12 @@ Español, corto. Objetivo: encontrar ventajas **robustas**, no la mejor curva. R
 - RSI(2) GBPUSD 34% y USOIL 22% de variantes OK fuera de muestra → ❌ descartadas (de "observación" a descartadas).
 - Swap: ver sección en `gestion-riesgo-avanzada`; cripto ~0.1R por operación de 20 días → medir en la demo.
 
+### Prueba "muchas operaciones y cerrar con ganancia" (23-nov)
+`python3 -I scripts/muchas_operaciones.py oro_h1.csv nasdaq_h1.csv` — abre 1 posición por hora y la cierra al llegar a TP (k×ATR), con o sin SL.
+- **Sin SL**: 100% de cierres en ganancia, pero las perdedoras quedan abiertas: oro total −$25k a −$124k, caída −$36k a −$146k; Nasdaq caída −$57k a −$386k (liquidación segura en $100k). Hasta 265 posiciones abiertas a la vez.
+- **Con SL**: resultado ≈ azar o negativo (spread). USDJPY: todas las variantes con SL negativas en IS y OOS; la menos mala (tendencia EMA50, TP 1 ATR, SL 2 ATR) −$82 a −$545/año con 0.01 lote por posición.
+- Veredicto ❌. Se corre como **experimento en vivo** en la demo 10076734 ($5k) a pedido del usuario, separado de la demo principal.
+
 ## Registro de pruebas (actualizar siempre)
 | Estrategia | Mercado | Datos | Resultado | Veredicto |
 |---|---|---|---|---|

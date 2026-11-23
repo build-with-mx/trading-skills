@@ -38,6 +38,9 @@ Donchian en velas de 4 h (5 años): 100% de variantes OK en IS y OOS en oro, ETH
 - Crypto cotiza el fin de semana: las señales del sábado/domingo se evalúan el domingo por la tarde.
 - Estado: **backtest ✔ → demo**. Pasar a real solo tras 30+ operaciones en demo (tarda meses: ~8-12 operaciones/año por mercado).
 
+## Entrada tardía en tendencias ya activas
+- 2026-11-23: se entró en ventas de oro, ETH y BTC con señales activas desde octubre (sin salida aún). Es válido en seguimiento de tendencia, pero no reproduce el backtest: precio peor y más cerca del final de la tendencia. Ese mismo día un rebote fuerte (+2-4%) las puso en pérdida flotante; normal mientras no se toque el SL ni la salida de 10 días.
+
 ## Revisión diaria (la hace la tarea "Estrategias diarias")
 1. `get_mt5_candles` D1 ~60 días de XAUUSD, ETHUSD y BTCUSD.
 2. Con posición: ¿cierre al otro lado del canal de 10? → `close_mt5_position`. Si no, mantener sin tocar.

@@ -9,7 +9,7 @@ Español, corto. Es la referencia que manda sobre cualquier impulso del momento.
 
 ## Meta
 - **Demo MT5 10076749 (Axi, $100,000)** = ensayo de cuenta de fondeo: riesgo **1% por operación** (decidido el 23-nov con delegación del usuario), máx. **3% abierto**, stop diario 3%. Objetivo tipo reto: +10% sin caer más de 10% desde el máximo.
-- (La demo 10076734 de $5,000 ya no se usa.)
+- La demo 10076734 ($5,000) solo corre el **experimento de muchas operaciones** en USDJPY, separado de la demo principal.
 - Después: cuenta de fondeo (capital ajeno) y, cuando haya resultados, cuenta real con confirmación explícita en cada operación.
 
 ## Estrategias
@@ -23,6 +23,7 @@ Español, corto. Es la referencia que manda sobre cualquier impulso del momento.
 | Máx/mín día anterior, Donchian | Oro / índices | En observación (`laboratorio-estrategias`) | No |
 | Scalping M1 (`scalping-micro-oro`) | Oro | Descartada | No |
 | Ruptura asiática en Nasdaq | Nasdaq | Descartada | No |
+| Experimento muchas operaciones (pedido del usuario) | USDJPY H1 en **demo 10076734 ($5k)** | ❌ en backtest; se mide en vivo | Tarea horaria :07, lun-vie: 0.01 lote, tendencia EMA50, TP 1 ATR, SL 2 ATR, máx. 10 abiertas, se detiene en −10% |
 | Investigación semanal | — | Sábados 10:17 MTY | Propone nuevas |
 
 ## Reglas de riesgo (no negociables)
@@ -39,6 +40,7 @@ Español, corto. Es la referencia que manda sobre cualquier impulso del momento.
 - Una estrategia nueva entra al plan solo tras backtest + 30-50 operaciones en demo.
 
 ## Historial de cambios
+- 2026-11-23 (mañana): primera operación de la ruptura asiática (compra oro 0.30 @3661.53); experimento de muchas operaciones en la demo de $5k; el usuario tiene posiciones manuales sin SL en su cuenta real 60465719 (recomendado poner SL; Claude no opera cuentas reales sin confirmación explícita).
 - 2026-11-23 (estudio 3): ruptura asiática se mantiene sin filtros; RSI(2) en GBPUSD y petróleo descartados; medir el swap real de cada posición (cripto es caro).
 - 2026-11-23 (madrugada): riesgo a 1% por operación y 3% abierto (delegación del usuario); se añade IBS en USTECH y US500; Donchian H4 estudiado y no añadido.
 - 2026-11-23: megalab de 28,640 combinaciones con validación fuera de muestra → Donchian: fuera USDJPY y plata, entra oro.

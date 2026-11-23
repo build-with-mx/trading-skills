@@ -26,6 +26,12 @@ Español, corto. Objetivo: encontrar ventajas **robustas**, no la mejor curva. R
 - **Reprobadas que parecían buenas con los 5 años completos**: Donchian **USDJPY** (IS +0.42R → OOS −0.37R, 0%) y Donchian **plata** (IS negativa, OOS positiva: inconsistente) → retiradas de la demo.
 - Peores zonas: Donchian en GBPUSD, US30, US2000, AUDUSD; Bollinger en USDCAD; rupturas de sesión H1 fuera del oro.
 
+### Megalab 2 (2026-11-23, 3,712 combinaciones: IBS, cambio de mes, MACD, Supertrend, barra interior/NR7, squeeze)
+`python3 -I scripts/megalab2.py config.json resultados2.csv` (mismo config; reusa megalab.py). Para comparar con el azar: unir sus filas con las filas `azar` de `resultados.csv` y pasar `analisis.py`.
+- Aprobadas: IBS USTECH 100%, MACD GER40 94% (contradice Donchian GER40 0% → observación), Supertrend ETH 83% / BTC 80%, y en oro squeeze 100%, NR7 100%, cambio de mes 92%, MACD 80% → **todas en oro son la misma ventaja de tendencia**: no sumarlas.
+- Rupturas por sesión (megalab H1): rango asiático oro 64%; **Londres** oro 28%, GER40 38%, GBP/EUR/JPY ≤ 3%; **Nueva York** oro 10%, USTECH 27% → ❌.
+- Catálogo completo con veredictos y fuentes: skill `enciclopedia-estrategias`.
+
 ## Registro de pruebas (actualizar siempre)
 | Estrategia | Mercado | Datos | Resultado | Veredicto |
 |---|---|---|---|---|

@@ -32,6 +32,7 @@ Meta-skill: fabrica otras skills de trading coherentes con el ecosistema del usu
 | estrategia-rsi2-indices | RSI(2) diario en US500 y US2000 (estado: backtest → demo) |
 | laboratorio-estrategias | Script multi-estrategia + registro de todo lo probado |
 | estrategia-tendencia-donchian | Tendencia Donchian 20 diario en USDJPY y ETHUSD (estado: backtest → demo) |
+| enciclopedia-estrategias | Catálogo de estrategias actuales con veredicto por datos y fuentes |
 
 Antes de crear, revisar `ls ~/.claude/skills ~/.claude/skills/synced/*/` por si ya existe algo parecido. Si existe, **proponer editar esa** en lugar de crear otra.
 

@@ -46,6 +46,7 @@ Antes de crear, revisar `ls ~/.claude/skills ~/.claude/skills/synced/*/` por si 
    cd ~/.claude/skills && zip -r /home/user/skills-trading/<nombre>.zip <nombre>
    ```
    Decir al usuario que la suba en claude.ai → Configuración → Capacidades/Skills → subir skill.
+   **Si existe el repo del plugin** (`trading-skills-plugin`): copiar la carpeta a `plugins/trading-pro/skills/`, subir la versión (+0.1.0) en `plugin.json` y `marketplace.json`, commit y push. El usuario actualiza con `/plugin marketplace update trading-skills`.
 7. **Actualizar** la tabla "Ecosistema actual" de esta skill con la nueva fila.
 
 ## Cuándo proponer una skill nueva sin que la pidan

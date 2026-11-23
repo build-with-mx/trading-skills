@@ -35,7 +35,7 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 4. Abre **MetaTrader 5 de escritorio**, inicia sesión en la **demo 10076749** y pulsa el botón **"Algo Trading"** (debe quedar en verde).
 
 ## Telegram (5 minutos, recomendado)
-1. En Telegram busca **@BotFather** → escribe `/newbot` → ponle nombre (p. ej. "Aurum de Juan") → copia el **token** que te da.
+1. En Telegram busca **@BotFather** → escribe `/newbot` → ponle nombre (p. ej. "Mi Aurum") → copia el **token** que te da.
 2. Abre el chat de tu nuevo bot y escríbele "hola".
 3. En la terminal, dentro de la carpeta aurum:  `python obtener_chat_id.py`  → pega el token. Se crea `telegram.json`.
 4. Prueba:  `python mensajero.py`  → debe llegarte un mensaje al celular.

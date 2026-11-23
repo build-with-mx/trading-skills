@@ -1,4 +1,4 @@
-# Aurum 1.8 — equipo de bots de trading
+# Aurum 1.9 — equipo de bots de trading
 
 Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el filtro anti-suerte:
 
@@ -45,7 +45,7 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 |---|---|---|
 | **Mecánico** 🔧 | `mecanico.py` | Cada 2 min revisa el latido de cada bot (avisa si uno se congela), que MetaTrader esté conectado, con **Algo Trading encendido** y en la cuenta correcta, y el disco. Parte diario a las 7 am MTY |
 | **Respaldo** 💾 | `respaldo.py` | Cada día (23:00 UTC) guarda la memoria del equipo en `respaldos/` (últimos 14 días). Nunca incluye `telegram.json` ni tus archivos AUTORIZO. Opcional: otra copia en Google Drive/OneDrive (`respaldo.carpeta_extra`) |
-| **Panel** 📊 | `panel.py` | Genera `panel.html` cada minuto: ábrelo con doble clic y verás cuenta, posiciones, resultado por estrategia, metas, salud de los bots, mercados y candidatas. Se actualiza solo |
+| **Panel** 📊 | `panel.py` | Genera `panel.html` cada minuto: ábrelo con doble clic y verás cuenta, posiciones, resultado por estrategia, metas, salud de los bots, **todas tus cuentas de fondeo**, mercados, candidatas, veredictos del Abogado del diablo, posicionamiento COT y resultados de empresas gigantes. Se actualiza solo y se ve bien en el celular |
 
 ## El equipo (fase 6: aprendizaje)
 | Bot | Archivo | Qué hace |

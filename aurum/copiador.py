@@ -211,6 +211,9 @@ class Copiador:
             if not self.mt5.positions_get(ticket=t):
                 self.est["copias"].pop(mid)
                 self.est["abiertas_desde"].pop(mid, None)
+        info = self.mt5.account_info()  # para el Panel multicuenta
+        self.est["cuenta"] = {"nombre": self.nombre, "login": info.login, "balance": round(info.balance, 2), "equity": round(info.equity, 2),
+                              "abiertas": len(self.est["copias"]), "actualizado": ahora.isoformat()}
         with open(self.ruta_estado, "w", encoding="utf-8") as f:
             json.dump(self.est, f, indent=2)
 

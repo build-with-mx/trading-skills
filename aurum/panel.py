@@ -96,6 +96,31 @@ def generar(cuenta=None, posiciones=None):
     cands = tabla(["Candidata", "Estado", "Ops papel", "Exp. papel", "Exp. backtest"],
                   [[e(f"{c['familia']} {c['simbolo']} {c['tf']}"), e(c.get("estado")), e(c.get("papel_ops", 0)),
                     color(c.get("papel_exp", 0), "{:+.2f}R"), color(c.get("exp_oos", 0), "{:+.2f}R")] for c in cand[:20]])
+    # cuentas copiadas (retos de fondeo)
+    filas_c = []
+    for f in sorted(os.listdir(CARPETA)):
+        if f.startswith("copiador_") and f.endswith("_estado.json"):
+            cu = cargar(f, {}).get("cuenta")
+            if not cu:
+                continue
+            nombre = cu["nombre"]
+            met_c = cargar(f"metas_{nombre}.json", {})
+            alto_c = os.path.exists(os.path.join(CARPETA, f"ALTO_{nombre}.flag"))
+            filas_c.append([e(nombre), e(cu["login"]), f"${cu['balance']:,.2f}", f"${cu['equity']:,.2f}", e(cu["abiertas"]),
+                            f"{max(0, met_c.get('progreso', 0)):.0%}" if met_c else "—", f"{met_c.get('prob_objetivo', 0):.0%}" if met_c else "—",
+                            "🧱 sí" if alto_c else "no"])
+    cuentas = tabla(["Cuenta", "Login", "Balance", "Equity", "Copias abiertas", "Progreso", "Prob. meta", "Bloqueo"], filas_c,
+                    "Sin cuentas de fondeo conectadas (ver LEEME: Copiador)")
+    # inteligencia
+    abo = cargar("abogado_estado.json", {}).get("resultados", {})
+    abogado = tabla(["Estrategia", "Mercado", "Veredicto", "Prob. de suerte"],
+                    [[e(k.split("|")[0]), e(" ".join(k.split("|")[1:])), e(v.get("veredicto")), f"{v.get('p_neg', 0):.0%}"]
+                     for k, v in abo.items() if "p_neg" in v])
+    cot = cargar("cot_estado.json", {})
+    cot_t = tabla(["Mercado", "Fecha", "Percentil 3 años", "Lectura"],
+                  [[e(s), e(v["fecha"]), f"{v['percentil']:.0%}", e(v["lectura"])] for s, v in cot.items() if isinstance(v, dict) and "percentil" in v])
+    res = cargar("resultados_estado.json", {}).get("eventos", [])
+    res_t = tabla(["Fecha", "Empresa", "Horario"], [[e(x["fecha"]), e(x["empresa"]), e(x["horario"])] for x in res], "Ninguna gigante reporta esta semana")
     alertas = (mec.get("alertas") or []) + (aud.get("hallazgos") or [])
     html_alertas = "".join(f'<div class="alerta">⚠️ {e(a)}</div>' for a in alertas)
 
@@ -112,14 +137,17 @@ h2{{font-size:15px;margin:22px 0 8px;color:var(--sub);text-transform:uppercase;l
 table{{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}} th,td{{padding:7px 10px;text-align:left;border-bottom:1px solid var(--borde);white-space:nowrap}}
 th{{color:var(--sub);font-weight:600;font-size:12px}} tr:last-child td{{border-bottom:0}} .pos{{color:var(--pos)}} .neg{{color:var(--neg)}}
 .vacio{{color:var(--sub)}} .alerta{{background:var(--card);border:1px solid var(--neg);border-radius:8px;padding:8px 10px;margin:6px 0}}
-.dos{{display:grid;grid-template-columns:1fr 1fr;gap:14px}} @media (max-width:760px){{.dos{{grid-template-columns:1fr}}}}
+.dos{{display:grid;grid-template-columns:1fr 1fr;gap:14px}} .dos>div{{min-width:0}} @media (max-width:760px){{.dos{{grid-template-columns:1fr}}}}
 </style></head><body><main>
 <h1><b>Aurum</b> · panel del equipo</h1><div class="sub">Actualizado {ahora:%Y-%m-%d %H:%M} UTC · se refresca cada minuto</div>
 {html_alertas}<div class="tarjetas">{html_tarjetas}</div>
 <h2>Posiciones abiertas</h2>{pos}
 <div class="dos"><div><h2>Resultado por estrategia</h2>{estr}</div><div><h2>Salud de los bots</h2>{bots}</div></div>
 <h2>Últimas operaciones</h2>{ults}
+<h2>Cuentas de fondeo (Copiador)</h2>{cuentas}
 <div class="dos"><div><h2>Mercados (Vigía)</h2>{merc}</div><div><h2>Candidatas (Explorador → Sombra)</h2>{cands}</div></div>
+<div class="dos"><div><h2>Abogado del diablo</h2>{abogado}</div><div><h2>Posicionamiento COT</h2>{cot_t}</div></div>
+<h2>Resultados de empresas gigantes</h2>{res_t}
 </main></body></html>"""
     tmp = RUTA_PANEL + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:

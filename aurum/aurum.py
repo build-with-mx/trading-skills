@@ -31,8 +31,9 @@ RUTA_CONFIG = os.path.join(CARPETA, "aurum_config.json")
 RUTA_ESTADO = os.path.join(CARPETA, "aurum_estado.json")
 RUTA_OPS = os.path.join(CARPETA, "aurum_operaciones.csv")
 RUTA_LOG = os.path.join(CARPETA, "aurum_eventos.log")
-VERSION = "1.1.0"
+VERSION = "1.2.0"
 RUTA_ALTO = os.path.join(CARPETA, "aurum_ALTO.flag")
+RUTA_VIGIA = os.path.join(CARPETA, "vigia_estado.json")
 
 
 # ============================ utilidades ============================
@@ -369,6 +370,9 @@ class Aurum:
         e = self.cfg["estrategias"][estrategia]
         bal = mt5.account_info().balance
         riesgo = bal * self.cfg["riesgo_por_operacion"]
+        if cargar_json(RUTA_VIGIA, {}).get("modo_precaucion"):
+            riesgo *= 0.5  # el Vigía activó la revisión profunda
+            motivo += " [modo precaución: riesgo a la mitad]"
         if self.riesgo_abierto() + riesgo > bal * self.cfg["riesgo_abierto_max"]:
             log("Sin espacio de riesgo: no abro", estrategia=estrategia, simbolo=simbolo)
             return

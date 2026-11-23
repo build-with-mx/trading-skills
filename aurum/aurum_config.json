@@ -1,5 +1,5 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "actualizado": "2026-11-23",
   "cuenta_permitida": 10076749,
   "solo_observar": false,
@@ -100,5 +100,33 @@
   "guardian": {
     "caida_maxima": 0.1,
     "intervalo_seg": 10
+  },
+  "universo": {
+    "D1": [
+      "XAUUSD",
+      "XAGUSD",
+      "ETHUSD",
+      "BTCUSD",
+      "US500",
+      "USTECH",
+      "US30",
+      "US2000",
+      "GER40",
+      "EURUSD",
+      "GBPUSD",
+      "USDJPY",
+      "AUDUSD",
+      "USDCAD",
+      "USDMXN",
+      "USOIL"
+    ],
+    "H1": [
+      "XAUUSD",
+      "USTECH",
+      "EURUSD",
+      "GBPUSD",
+      "GER40",
+      "USDJPY"
+    ]
   }
 }

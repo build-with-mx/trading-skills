@@ -1,4 +1,4 @@
-# Aurum 1.1 — equipo de bots de trading
+# Aurum 1.2 — equipo de bots de trading
 
 Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el filtro anti-suerte:
 
@@ -25,6 +25,14 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 | **Contador** 📊 | `contador.py` | Registra cada operación en `aurum.db`, genera `contador_reporte.md` cada hora (por estrategia: acierto, R, expectativa vivo vs backtest, swap, deslizamiento) y te manda un resumen diario |
 | **Mensajero** 📱 | `mensajero.py` | Envía todos los avisos a tu Telegram |
 
+## El equipo (fases 2 y 3)
+| Bot | Archivo | Qué hace |
+|---|---|---|
+| **Minero** ⛏️ | `minero.py` | Guarda las velas D1 (~5 años) y H1 (~1 año) de 16 mercados en `datos.db` y las actualiza cada 6 h |
+| **Vigía** 🔭 | `vigia.py` | Cada 15 min: régimen (tendencia/rango), volatilidad (ATR vs media), VIX, noticias de alto impacto (resumen diario 6 am MTY) y comunicados de la Fed (**Cazanoticias**). Si hay volatilidad > 2×, 3+ estrategias perdiendo el mismo día o la cuenta cae −2% en el día → **modo precaución**: Aurum arriesga la mitad hasta el día siguiente |
+| **Explorador** 🔬 | `explorador.py` | Cada sábado (y al arrancar si no hay candidatos) prueba ~30,000 variantes de 14 familias en todos los mercados con validación fuera de muestra y control al azar. Las zonas robustas entran a `candidatos.json`, marcadas si repiten una ventaja ya activa |
+| **Sombra** 👻 | `sombra.py` | Practica en papel, en vivo, cada candidata. Te avisa cuando una **aprueba** (≥ 20 ops, o ≥ 10 ops y 90 días, con expectativa > 0 y ≥ 50% del backtest) o se **descarta**. Ninguna pasa a dinero sin que tú y Claude la agreguen |
+
 ## Instalación (una sola vez)
 1. Instala **Python 3** desde https://www.python.org/downloads/ — marca **"Add Python to PATH"**.
 2. Abre la terminal (tecla Windows → escribe `cmd` → Enter) y ejecuta:
@@ -42,7 +50,7 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 **No compartas `telegram.json` con nadie** (contiene la llave de tu bot).
 
 ## Arrancar
-Doble clic en **`INICIAR_TODO.bat`**: se abren 3 ventanas (Guardián, Contador y Aurum). Si alguno se cae, se reinicia solo a los 15 segundos. **Deja las ventanas abiertas** (puedes minimizarlas) y que la PC no se suspenda.
+Doble clic en **`INICIAR_TODO.bat`**: se abren 7 ventanas (Guardián, Minero, Contador, Vigía, Sombra, Explorador y Aurum). La primera vez el Minero tarda ~1 minuto en llenar `datos.db` y el Explorador hará su primera búsqueda (unos minutos). Si alguno se cae, se reinicia solo a los 15 segundos. **Deja las ventanas abiertas** (puedes minimizarlas) y que la PC no se suspenda.
 (Manual: `python guardian.py`, `python contador.py`, `python aurum.py` en ventanas separadas.)
 
 ### Si el Guardián bloquea
@@ -58,6 +66,8 @@ Cierra las ventanas (o Ctrl + C en cada una). Las posiciones abiertas conservan 
 - `aurum_eventos.log` — todo lo que hace y por qué (señales, bloqueos por noticias, errores).
 - `aurum_estado.json`, `guardian_estado.json` — memoria interna (no los edites).
 - `contador_reporte.md` y `aurum.db` — estadísticas del Contador.
+- `vigia_reporte.md`, `sombra_reporte.md`, `candidatos.json`, `explorador_ultimo.json` — inteligencia, práctica en papel y exploración.
+- `datos.db` — velas guardadas por el Minero.
 
 ## Cómo se actualiza
 Claude investiga estrategias y, cuando una nueva pasa las pruebas, te envía un `aurum_config.json` nuevo (o una nueva versión de `aurum.py`). Reemplaza el archivo y reinicia Aurum. Más adelante se puede activar la descarga automática desde GitHub (`config_remota`).

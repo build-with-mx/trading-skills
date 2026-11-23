@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
+  "version": "1.3.0",
   "actualizado": "2026-11-23",
   "cuenta_permitida": 10076749,
   "solo_observar": false,
@@ -128,5 +128,32 @@
       "GER40",
       "USDJPY"
     ]
+  },
+  "metas": {
+    "activo": true,
+    "_nota": "Meta de la demo maestra: +10% antes de perder -10%. El Estratega solo BAJA el riesgo, nunca lo sube.",
+    "balance_inicial": 100000,
+    "objetivo": 0.1,
+    "limite_perdida": 0.1,
+    "proteger_cerca_objetivo": 0.8,
+    "proteger_cerca_limite": 0.5,
+    "factor_proteccion": 0.5
+  },
+  "fondeo": {
+    "activo": false,
+    "_nota": "Para practicar en la demo con las reglas de un reto, pon activo=true y ajusta las reglas.",
+    "empresa": "simulacion",
+    "balance_inicial": 100000,
+    "perdida_diaria_max": 0.05,
+    "base_perdida_diaria": "balance",
+    "perdida_total_max": 0.1,
+    "tipo_perdida_total": "estatica",
+    "objetivo": 0.1,
+    "consistencia_max_dia": 0,
+    "bloquear_en": 0.5,
+    "cerrar_en": 0.8,
+    "cerrar_fin_semana": false,
+    "cerrar_antes_de_noticias_min": 0,
+    "offset_dia_servidor_h": 2
   }
 }

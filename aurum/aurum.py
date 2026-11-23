@@ -31,9 +31,12 @@ RUTA_CONFIG = os.path.join(CARPETA, "aurum_config.json")
 RUTA_ESTADO = os.path.join(CARPETA, "aurum_estado.json")
 RUTA_OPS = os.path.join(CARPETA, "aurum_operaciones.csv")
 RUTA_LOG = os.path.join(CARPETA, "aurum_eventos.log")
-VERSION = "1.2.0"
+VERSION = "1.3.0"
 RUTA_ALTO = os.path.join(CARPETA, "aurum_ALTO.flag")
 RUTA_VIGIA = os.path.join(CARPETA, "vigia_estado.json")
+RUTA_METAS = os.path.join(CARPETA, "metas_estado.json")
+RUTA_SENALES = os.path.join(CARPETA, "senales_maestro.jsonl")  # para el Copiador
+RUTA_VIVAS = os.path.join(CARPETA, "maestro_vivas.json")
 
 
 # ============================ utilidades ============================
@@ -64,6 +67,16 @@ def cargar_json(ruta, defecto):
             return json.load(f)
     except Exception:
         return defecto
+
+
+def publicar_senal(**ev):
+    """Añade un evento (ABRIR/CERRAR) a senales_maestro.jsonl para que los Copiadores lo repliquen."""
+    try:
+        ev["t"] = ahora_utc().isoformat()
+        with open(RUTA_SENALES, "a", encoding="utf-8") as f:
+            f.write(json.dumps(ev, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
 
 
 def guardar_json(ruta, datos):
@@ -373,6 +386,10 @@ class Aurum:
         if cargar_json(RUTA_VIGIA, {}).get("modo_precaucion"):
             riesgo *= 0.5  # el Vigía activó la revisión profunda
             motivo += " [modo precaución: riesgo a la mitad]"
+        f_meta = min(1.0, float(cargar_json(RUTA_METAS, {}).get("factor_riesgo", 1.0)))  # el Estratega solo lo baja
+        if f_meta < 1.0:
+            riesgo *= f_meta
+            motivo += f" [Estratega de metas: riesgo ×{f_meta:g}]"
         if self.riesgo_abierto() + riesgo > bal * self.cfg["riesgo_abierto_max"]:
             log("Sin espacio de riesgo: no abro", estrategia=estrategia, simbolo=simbolo)
             return
@@ -398,6 +415,8 @@ class Aurum:
             enviar(f"❗ No pude abrir {estrategia} en {simbolo} (código {getattr(r, 'retcode', None)})")
             return
         riesgo_real = abs(r.price - sl) * self.valor_por_precio(simbolo) * lote
+        publicar_senal(accion="ABRIR", id=r.order, estrategia=estrategia, simbolo=simbolo, direccion=direccion, precio=r.price,
+                       sl_dist=abs(r.price - sl), tp_dist=abs(tp - r.price) if tp else 0.0, magic=e["magic"])
         self.estado["riesgos"][str(r.order)] = riesgo_real
         guardar_json(RUTA_ESTADO, self.estado)
         registrar_operacion(accion="ABRIR", estrategia=estrategia, simbolo=simbolo, direccion="COMPRA" if direccion == 1 else "VENTA",
@@ -419,6 +438,7 @@ class Aurum:
         if r is None or r.retcode != mt5.TRADE_RETCODE_DONE:
             log("Error al cerrar", ticket=p.ticket, retcode=getattr(r, "retcode", None), error=mt5.last_error())
             return
+        publicar_senal(accion="CERRAR", id=p.ticket, estrategia=estrategia, simbolo=p.symbol, motivo=motivo)
         registrar_operacion(accion="CERRAR", estrategia=estrategia, simbolo=p.symbol, direccion="COMPRA" if es_compra else "VENTA",
                             lote=p.volume, precio=r.price, resultado_usd=round(p.profit + p.swap, 2), motivo=motivo)
         log("CERRADA", ticket=p.ticket, estrategia=estrategia, resultado=round(p.profit + p.swap, 2), motivo=motivo)
@@ -455,6 +475,7 @@ class Aurum:
         return True
 
     def ciclo(self):
+        guardar_json(RUTA_VIVAS, {"t": ahora_utc().isoformat(), "ids": [p.ticket for p in mt5.positions_get() or []]})
         self.actualizar_config()
         self.actualizar_noticias()
         self.calcular_offset()

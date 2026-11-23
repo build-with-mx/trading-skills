@@ -1,4 +1,4 @@
-# Aurum 1.2 — equipo de bots de trading
+# Aurum 1.3 — equipo de bots de trading
 
 Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el filtro anti-suerte:
 
@@ -33,6 +33,20 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 | **Explorador** 🔬 | `explorador.py` | Cada sábado (y al arrancar si no hay candidatos) prueba ~30,000 variantes de 14 familias en todos los mercados con validación fuera de muestra y control al azar. Las zonas robustas entran a `candidatos.json`, marcadas si repiten una ventaja ya activa |
 | **Sombra** 👻 | `sombra.py` | Practica en papel, en vivo, cada candidata. Te avisa cuando una **aprueba** (≥ 20 ops, o ≥ 10 ops y 90 días, con expectativa > 0 y ≥ 50% del backtest) o se **descarta**. Ninguna pasa a dinero sin que tú y Claude la agreguen |
 
+## El equipo (fase 4: metas y cuentas de fondeo)
+| Bot | Archivo | Qué hace |
+|---|---|---|
+| **Estratega de metas** 🎯 | `estratega_metas.py` | Cada hora mide el avance hacia la meta (bloque `metas`), estima con 3,000 simulaciones la probabilidad de lograrla y las semanas que faltan, y **baja el riesgo a la mitad** cuando ya llevas el 80% del camino o consumiste la mitad del margen de pérdida. **Nunca lo sube.** Resumen los domingos |
+| **Supervisor de fondeo** 🏢 | `supervisor_fondeo.py` | Hace cumplir las reglas de la empresa de fondeo **con margen**: al 50% de un límite (diario o total) deja de abrir; al 80% **cierra todo** antes de que la empresa te descalifique. También: objetivo alcanzado → para; consistencia; cierre antes de noticias o del fin de semana si la empresa lo pide |
+| **Copiador** 📡 | `copiador.py` | Copia las operaciones de Aurum a otra cuenta (un reto de fondeo, otra demo) con el riesgo de **esa** cuenta. No persigue el precio (señal de más de 10 min o precio movido > 25% del SL → no copia) |
+
+### Cómo conectar una cuenta de fondeo (cuando la compres)
+1. Instala el **MetaTrader 5 de la empresa de fondeo** (es un segundo programa, aparte del de Axi) e inicia sesión en el reto.
+2. Copia `copiador_ejemplo.json` como `copiador_fondeo1.json` y rellena: ruta del `terminal`, número de `cuenta`, nombres de los símbolos de esa empresa (`mapa_simbolos`), y las **reglas exactas** del reto en `fondeo` y `metas`.
+3. Un reto es una cuenta **real**: el Copiador solo opera si pones `"permitir_cuenta_real": true` **y** creas tú el archivo `AUTORIZO_<número de cuenta>.txt` con la palabra `AUTORIZO`. Es tu firma: sin ella no se mueve.
+4. Doble clic en **`iniciar_fondeo.bat`** → abre Supervisor, Estratega y Copiador de esa cuenta. (Para otra cuenta: `iniciar_fondeo.bat copiador_fondeo2.json`.)
+5. Aurum debe seguir corriendo en la demo: es la cuenta maestra que genera las señales.
+
 ## Instalación (una sola vez)
 1. Instala **Python 3** desde https://www.python.org/downloads/ — marca **"Add Python to PATH"**.
 2. Abre la terminal (tecla Windows → escribe `cmd` → Enter) y ejecuta:
@@ -50,7 +64,7 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 **No compartas `telegram.json` con nadie** (contiene la llave de tu bot).
 
 ## Arrancar
-Doble clic en **`INICIAR_TODO.bat`**: se abren 7 ventanas (Guardián, Minero, Contador, Vigía, Sombra, Explorador y Aurum). La primera vez el Minero tarda ~1 minuto en llenar `datos.db` y el Explorador hará su primera búsqueda (unos minutos). Si alguno se cae, se reinicia solo a los 15 segundos. **Deja las ventanas abiertas** (puedes minimizarlas) y que la PC no se suspenda.
+Doble clic en **`INICIAR_TODO.bat`**: se abren 8 ventanas (Guardián, Minero, Contador, Vigía, Sombra, Explorador, Estratega y Aurum). La primera vez el Minero tarda ~1 minuto en llenar `datos.db` y el Explorador hará su primera búsqueda (unos minutos). Si alguno se cae, se reinicia solo a los 15 segundos. **Deja las ventanas abiertas** (puedes minimizarlas) y que la PC no se suspenda.
 (Manual: `python guardian.py`, `python contador.py`, `python aurum.py` en ventanas separadas.)
 
 ### Si el Guardián bloquea
@@ -68,6 +82,8 @@ Cierra las ventanas (o Ctrl + C en cada una). Las posiciones abiertas conservan 
 - `contador_reporte.md` y `aurum.db` — estadísticas del Contador.
 - `vigia_reporte.md`, `sombra_reporte.md`, `candidatos.json`, `explorador_ultimo.json` — inteligencia, práctica en papel y exploración.
 - `datos.db` — velas guardadas por el Minero.
+- `metas_estado.json` — avance, probabilidad y factor de riesgo del Estratega.
+- `senales_maestro.jsonl`, `maestro_vivas.json` — señales que Aurum publica para los Copiadores.
 
 ## Cómo se actualiza
 Claude investiga estrategias y, cuando una nueva pasa las pruebas, te envía un `aurum_config.json` nuevo (o una nueva versión de `aurum.py`). Reemplaza el archivo y reinicia Aurum. Más adelante se puede activar la descarga automática desde GitHub (`config_remota`).

@@ -43,7 +43,9 @@ _DATOS = {}
 
 def estrategias_activas(cfg):
     """(familia del laboratorio, símbolo) de lo que Aurum ya opera."""
-    return {(YA_ACTIVAS[n], s) for n, e in cfg["estrategias"].items() if n in YA_ACTIVAS and e.get("activa") for s in e["simbolos"]}
+    activas = {(YA_ACTIVAS[n], s) for n, e in cfg["estrategias"].items() if n in YA_ACTIVAS and e.get("activa") for s in e["simbolos"]}
+    activas |= {(e["familia_lab"], s) for e in cfg["estrategias"].values() if e.get("familia_lab") and e.get("activa") for s in e["simbolos"]}
+    return activas
 
 
 def _init(universo):

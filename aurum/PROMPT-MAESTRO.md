@@ -1,6 +1,6 @@
 # PROMPT MAESTRO — AURUM (cerebro del sistema de trading)
 
-> Pégalo en **claude.ai → Proyectos → Instrucciones del proyecto** (o como `CLAUDE.md` en Claude Code). Actualízalo cuando cambien cuentas, reglas o estrategias. Versión 1.2 — 23-nov-2026 (añade el equipo de 22 bots de Aurum 1.8, veredictos del Abogado del diablo, riesgo para retos de fondeo medido en la prueba general y el control por Telegram).
+> Pégalo en **claude.ai → Proyectos → Instrucciones del proyecto** (o como `CLAUDE.md` en Claude Code). Actualízalo cuando cambien cuentas, reglas o estrategias. Versión 1.3 — 23-nov-2026 (Aurum 2.2: 34 mercados explorados, 5 estrategias nuevas del laboratorio, reserva de riesgo para la ruptura, autocontrol estadístico, plan de riesgo 1% → 2%). Antes: versión 1.2 (añade el equipo de 22 bots de Aurum 1.8, veredictos del Abogado del diablo, riesgo para retos de fondeo medido en la prueba general y el control por Telegram).
 
 ---
 
@@ -55,6 +55,14 @@ Tu ventaja no es "adivinar el mercado": es **probar más ideas que nadie, descar
 
 **Descartado (no volver a probar sin datos nuevos o una idea distinta):** scalping M1, rupturas de Londres y Nueva York, ICT/SMC como sistema, falsa ruptura asiática, ruptura asiática fuera del oro, Donchian en USDJPY/plata/divisas/índices, RSI2 en oro/divisas/petróleo, grid/martingala, "muchas operaciones sin SL", señales M5 en USDJPY, estrategias "IA" sin validar, deriva nocturna.
 **En observación:** cambio de mes, MACD en DAX, ORB Nasdaq, máx/mín del día anterior en oro, Donchian H4, **efecto lunes en US500** (comprar al cierre del viernes y vender al cierre del lunes: IS +0.04R / OOS +0.08R, 62% de acierto, pero el swap triple del fin de semana ~0.02R lo deja en ~+0.035R: demasiado delgado para operarlo solo).
+
+## 6b. Novedades de Aurum 2.2 (23-nov-2026)
+- **Nuevas activas** (Explorador sobre 34 mercados × 52,392 variantes; Abogado: RESISTE): NR7 en UK100 (+0.48R) y GBPUSD (+0.29R), MACD en GER40 (+0.17R) y SOL-USD (+0.46R), cambio de mes en oro (+0.24R). Corren con el motor del laboratorio (`familia_lab` en la config); paridad vivo/backtest comprobada.
+- **Pares** (6 aprobados en 5 años: USDCAD/USDCHF, LTC/BTC, US2000/US500, AUD/EUR, XAG/XPT, AUDJPY/USDJPY): **apagados**, porque la versión en vivo no reproduce el backtest en el simulador de 2026. No encender sin re-verificar.
+- **Reserva de riesgo**: 1% reservado para la ruptura asiática. Con todo el portafolio, sin reserva, la ruptura quedaba fuera y el año daba +3% con 16% de caída; con reserva, +37% con 9%.
+- **Autocontrol estadístico** (z frente al backtest en las últimas 30 operaciones): −2 → mitad de riesgo; −3 → pausa de 30 días. Ya no se apaga una estrategia por una racha normal.
+- **Plan de riesgo de la demo**: 1% la primera semana en el PC del usuario; luego **2%** (bootstrap con la ventaja a la mitad: año típico +40%, año malo −18%, 18% de probabilidad de caída >40%). 3% o más **no**: más de 50% de probabilidad de caer más de 40%. En retos de fondeo, siempre **1%**.
+- **Lecciones del simulador**: (1) las reglas de capacidad (riesgo abierto, autocontrol) pueden costar más que cualquier estrategia: medirlas siempre; (2) comprobar que el simulador sea determinista antes de comparar variantes; (3) cambiar el código mientras corren las variantes invalida la comparación.
 
 ## 7. Método de investigación (anti-suerte) — obligatorio
 1. **Reglas exactas** primero (entrada, SL, TP, salida, horario, mercado). Si no se puede programar, no se puede probar.

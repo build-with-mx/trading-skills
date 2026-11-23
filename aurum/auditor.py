@@ -39,7 +39,7 @@ def cargar(ruta, defecto):
 def auditar(cfg, posiciones, balance, filas):
     """posiciones: [{ticket, simbolo, magic, sl, riesgo_usd}]. filas: registro CSV. Devuelve lista de hallazgos (texto)."""
     h = []
-    for k, tope in LIMITES.items():
+    for k, tope in {**LIMITES, **{k: v for k, v in cfg.get("topes_auditor", {}).items() if not k.startswith("_")}}.items():
         if cfg.get(k, 0) > tope:
             h.append(f"config: {k} = {cfg[k]:.2%} supera el tope de {tope:.0%}")
     magics = {0} | {e["magic"] for e in cfg.get("estrategias", {}).values()}
@@ -80,7 +80,13 @@ def leer_filas():
 
 def posiciones_mt5(mt5):
     out = []
+    cfg = cargar(RUTA_CONFIG, {})
+    magic_par = cfg.get("estrategias", {}).get("par_ratio", {}).get("magic")
+    riesgos = cargar(os.path.join(CARPETA, "aurum_estado.json"), {}).get("riesgos", {})
     for p in mt5.positions_get() or []:
+        if p.magic == magic_par and str(p.ticket) in riesgos and p.sl:  # par: cuenta el stop del ratio
+            out.append({"ticket": p.ticket, "simbolo": p.symbol, "magic": p.magic, "sl": p.sl, "riesgo_usd": riesgos[str(p.ticket)]})
+            continue
         i = mt5.symbol_info(p.symbol)
         dist = max(0.0, (p.price_open - p.sl) if p.type == 0 else (p.sl - p.price_open)) if p.sl else 0.0
         out.append({"ticket": p.ticket, "simbolo": p.symbol, "magic": p.magic, "sl": p.sl,

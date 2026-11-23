@@ -33,7 +33,7 @@ RUTA_CONFIG = os.path.join(CARPETA, "aurum_config.json")
 RUTA_ESTADO = os.path.join(CARPETA, "aurum_estado.json")
 RUTA_OPS = os.path.join(CARPETA, "aurum_operaciones.csv")
 RUTA_LOG = os.path.join(CARPETA, "aurum_eventos.log")
-VERSION = "1.9.0"
+VERSION = "2.2.0"
 RUTA_ALTO = os.path.join(CARPETA, "aurum_ALTO.flag")
 RUTA_PAUSA = os.path.join(CARPETA, "aurum_PAUSA.flag")  # pausa manual (Centralita /pausa)
 RUTA_VIGIA = os.path.join(CARPETA, "vigia_estado.json")
@@ -219,6 +219,71 @@ def ibs_salida(d1, p, direccion, sesiones):
     return sesiones >= p["max_sesiones"] or (direccion == 1 and v > p["salida"]) or (direccion == -1 and v < 1 - p["salida"])
 
 
+def senal_lab(familia, params, t, o, h, l, c):
+    """Señales de cualquier familia del laboratorio con la MISMA lógica que se validó (lab_motor).
+    Captura lo que la familia le pasaría al simulador: entradas/salidas por vela, multiplicador de SL, TP y tiempo máximo."""
+    import lab_motor as L
+    cap = {}
+
+    def captura(m, el, es, xl, xs, slm, rr=None, maxh=None):
+        cap.update(el=el, es=es, xl=xl, xs=xs, slm=slm, rr=rr, maxh=maxh, a=m.a)
+        return []
+    original = L.sim
+    L.sim = captura
+    try:
+        L.evaluar(L.M(t, o, h, l, c, 0.0), "d1", familia, tuple(params))
+    finally:
+        L.sim = original
+    if familia == "tom" and cap:
+        # el laboratorio mira la fecha de la vela que está nlast sesiones adelante; en vivo se sabe con el calendario
+        # (días hábiles que le quedan al mes después de hoy). Los festivos pueden mover 1 día la entrada.
+        hoy = (t[-1] + timedelta(hours=3)).date()
+        quedan, d = 0, hoy + timedelta(days=1)
+        while d.month == hoy.month:
+            quedan += d.weekday() < 5
+            d += timedelta(days=1)
+        cap["el"] = cap["el"][:-1] + [quedan == params[0] - 1]
+    return cap
+
+
+def spread_par(da, db):
+    """Serie log(A) - log(B) en las velas D1 comunes (mismo tiempo). Devuelve (tiempos, serie)."""
+    cb = {b["time"]: b["close"] for b in db}
+    ts = [b["time"] for b in da if b["time"] in cb]
+    ca = {b["time"]: b["close"] for b in da}
+    return ts, [math.log(ca[t]) - math.log(cb[t]) for t in ts]
+
+
+def senal_par(da, db, p):
+    """Par de reversión del ratio: z del spread frente a sus últimas L velas (sin la actual).
+    Devuelve (lado, z, media, desv, spread_actual) con lado 1 = comprar A y vender B, −1 = al revés; o None."""
+    ts, sp = spread_par(da, db)
+    if len(sp) < p["L"] + 1:
+        return None
+    w = sp[-p["L"] - 1:-1]
+    m = sum(w) / len(w)
+    sd = (sum((x - m) ** 2 for x in w) / len(w)) ** 0.5
+    if sd <= 0:
+        return None
+    z = (sp[-1] - m) / sd
+    if abs(z) >= p["S"]:
+        return None  # el ratio ya pasó su propio stop: entrar ahí sería empezar perdiendo
+    lado = 1 if z < -p["E"] else -1 if z > p["E"] else 0
+    return (lado, z, m, sd, sp[-1]) if lado else None
+
+
+def salida_par(sp_actual, pos, p, sesiones):
+    """pos: {lado, e, m, sd}. Motivo de salida o None: vuelta a la media, stop del spread o tiempo."""
+    z = (sp_actual - pos["m"]) / pos["sd"]
+    if (sp_actual - pos["e"]) * pos["lado"] <= -(p["S"] - p["E"]) * pos["sd"]:
+        return "stop del spread"
+    if (pos["lado"] == 1 and z > -p["X"]) or (pos["lado"] == -1 and z < p["X"]):
+        return "volvió a la media"
+    if sesiones >= p["H"]:
+        return f"{p['H']} sesiones"
+    return None
+
+
 # ============================ MetaTrader ============================
 class Aurum:
     def __init__(self):
@@ -334,13 +399,36 @@ class Aurum:
                 return 0.0
         return round(min(lote, i.volume_max), 2)
 
+    def riesgo_de(self, p):
+        """Riesgo real de una posición. En los pares el SL del broker es solo de emergencia (muy lejano): cuenta el stop del ratio."""
+        par = self.cfg["estrategias"].get("par_ratio", {})
+        if p.magic == par.get("magic") and str(p.ticket) in self.estado["riesgos"]:
+            return self.estado["riesgos"][str(p.ticket)]
+        if not p.sl:
+            return 0.0
+        d = (p.price_open - p.sl) if p.type == mt5.POSITION_TYPE_BUY else (p.sl - p.price_open)
+        return max(d, 0) * self.valor_por_precio(p.symbol) * p.volume
+
     def riesgo_abierto(self):
-        total = 0.0
-        for p in mt5.positions_get() or []:
-            if p.sl:
-                d = (p.price_open - p.sl) if p.type == mt5.POSITION_TYPE_BUY else (p.sl - p.price_open)
-                total += max(d, 0) * self.valor_por_precio(p.symbol) * p.volume
-        return total
+        return sum(self.riesgo_de(p) for p in mt5.positions_get() or [])
+
+    def limite_riesgo(self, estrategia):
+        """Riesgo abierto máximo para esta estrategia: el total menos lo reservado a OTRAS estrategias sin posición abierta."""
+        bal = mt5.account_info().balance
+        limite = bal * self.cfg["riesgo_abierto_max"]
+        for otra, frac in self.cfg.get("reservas_riesgo", {}).items():
+            if otra != estrategia and not self.posiciones(otra):
+                limite -= bal * frac
+        return limite
+
+    def riesgo_grupo(self, simbolo):
+        """(nombre, riesgo abierto del grupo, máximo $) del grupo correlacionado del símbolo, o None."""
+        bal = mt5.account_info().balance
+        for nombre, g in self.cfg.get("grupos_riesgo", {}).items():
+            if simbolo in g["simbolos"]:
+                total = sum(self.riesgo_de(p) for p in mt5.positions_get() or [] if p.symbol in g["simbolos"])
+                return nombre, total, bal * g["max"]
+        return None
 
     def resultado_hoy(self):
         desde = datetime.combine(ahora_utc().date(), datetime.min.time())
@@ -391,12 +479,19 @@ class Aurum:
         if cargar_json(RUTA_VIGIA, {}).get("modo_precaucion"):
             riesgo *= 0.5  # el Vigía activó la revisión profunda
             motivo += " [modo precaución: riesgo a la mitad]"
+        if estrategia in self.estado.get("reducidas", []):
+            riesgo *= 0.5
+            motivo += " [autocontrol: riesgo a la mitad]"
         f_meta = min(1.0, float(cargar_json(RUTA_METAS, {}).get("factor_riesgo", 1.0)))  # el Estratega solo lo baja
         if f_meta < 1.0:
             riesgo *= f_meta
             motivo += f" [Estratega de metas: riesgo ×{f_meta:g}]"
-        if self.riesgo_abierto() + riesgo > bal * self.cfg["riesgo_abierto_max"]:
+        if self.riesgo_abierto() + riesgo > self.limite_riesgo(estrategia) * 1.0001:
             log("Sin espacio de riesgo: no abro", estrategia=estrategia, simbolo=simbolo)
+            return
+        g = self.riesgo_grupo(simbolo)
+        if g and g[1] + riesgo > g[2] * 1.0001:
+            log("Grupo correlacionado lleno: no abro", estrategia=estrategia, simbolo=simbolo, grupo=g[0])
             return
         lote = self.lote_para_riesgo(simbolo, dist_sl, riesgo)
         if lote <= 0:
@@ -458,22 +553,150 @@ class Aurum:
         log("CERRADA", ticket=p.ticket, estrategia=estrategia, resultado=round(p.profit + p.swap, 2), motivo=motivo)
         enviar(f"{'✅' if p.profit + p.swap > 0 else '🔻'} CERRADA {estrategia}: {p.symbol} {p.volume} lotes · resultado {p.profit + p.swap:+,.2f}$ · {motivo}")
 
+    # ---------- pares (reversión del ratio) ----------
+    def ciclo_pares(self, bloqueado, noticia):
+        e = self.cfg["estrategias"].get("par_ratio")
+        if not e:
+            return
+        pares = self.estado.setdefault("pares", {})
+        for par in e["pares"]:
+            p = {**e, **par}  # cada par con sus propios parámetros (L, E, X, S, H)
+            a, b = par["a"], par["b"]
+            clave = f"{a}/{b}"
+            pos = pares.get(clave)
+            # si el broker cerró una pata (SL de emergencia), cierro la otra de inmediato
+            if pos:
+                vivas = [t for t in pos["tickets"] if mt5.positions_get(ticket=t)]
+                if len(vivas) < 2:
+                    for t in vivas:
+                        for p in mt5.positions_get(ticket=t) or []:
+                            self.cerrar(p, "par_ratio", "la otra pata del par se cerró")
+                    pares.pop(clave)
+                    continue
+            if not (self.mercado_abierto(a) and self.mercado_abierto(b)):
+                continue
+            da, db = self.barras(a, mt5.TIMEFRAME_D1, p["L"] + 30), self.barras(b, mt5.TIMEFRAME_D1, p["L"] + 30)
+            if not da or not db or not self.nueva_barra(f"par:{clave}:D1", da):
+                continue
+            if pos:
+                pos["sesiones"] = pos.get("sesiones", 0) + 1
+                _, sp = spread_par(da, db)
+                motivo = salida_par(sp[-1], pos, p, pos["sesiones"])
+                if motivo:
+                    for t in pos["tickets"]:
+                        for p in mt5.positions_get(ticket=t) or []:
+                            self.cerrar(p, "par_ratio", motivo)
+                    pares.pop(clave)
+                continue
+            if bloqueado or noticia or not self.activa("par_ratio"):
+                continue
+            sen = senal_par(da, db, p)
+            if sen:
+                self.abrir_par(clave, a, b, sen, da, db, p)
+
+    def abrir_par(self, clave, a, b, sen, da, db, e):
+        lado, z, m, sd, sp = sen
+        bal = mt5.account_info().balance
+        riesgo = bal * self.cfg["riesgo_por_operacion"] * e.get("factor_riesgo", 1.0)
+        if cargar_json(RUTA_VIGIA, {}).get("modo_precaucion"):
+            riesgo *= 0.5
+        riesgo *= min(1.0, float(cargar_json(RUTA_METAS, {}).get("factor_riesgo", 1.0)))
+        if "par_ratio" in self.estado.get("reducidas", []):
+            riesgo *= 0.5
+        d = (e["S"] - e["E"]) * sd                      # distancia del stop en el spread (log)
+        nocional = riesgo / d                           # $ por pata: una pérdida de d en el spread ≈ riesgo
+        patas = []
+        for sim, direccion, velas in ((a, lado, da), (b, -lado, db)):
+            info, tick = mt5.symbol_info(sim), mt5.symbol_info_tick(sim)
+            precio = tick.ask if direccion == 1 else tick.bid
+            lote = math.floor(nocional / (self.valor_por_precio(sim) * precio) / info.volume_step + 1e-9) * info.volume_step
+            dist_sl = e["sl_pata_atr"] * atr(velas, 20)
+            if lote < info.volume_min:
+                log("Par: el lote mínimo no cabe en el riesgo", par=clave, simbolo=sim)
+                return
+            patas.append((sim, direccion, round(min(lote, info.volume_max), 2), precio, dist_sl, info))
+        riesgo_patas = riesgo  # el riesgo real del par es el stop del ratio (el SL de cada pata es de emergencia)
+        if self.riesgo_abierto() + riesgo_patas > self.limite_riesgo("par_ratio") * 1.0001:
+            log("Par: sin espacio de riesgo", par=clave)
+            return
+        g = self.riesgo_grupo(a)
+        if g and g[1] + riesgo_patas > g[2] * 1.0001:
+            log("Par: grupo correlacionado lleno", par=clave, grupo=g[0])
+            return
+        if self.cfg.get("solo_observar"):
+            log("SEÑAL PAR (modo observar)", par=clave, lado=lado, z=round(z, 2))
+            return
+        tickets = []
+        for sim, direccion, lote, precio, dist_sl, info in patas:
+            sl = round(precio - direccion * dist_sl, info.digits)
+            req = {"action": mt5.TRADE_ACTION_DEAL, "symbol": sim, "volume": lote, "price": precio, "sl": sl, "tp": 0.0,
+                   "type": mt5.ORDER_TYPE_BUY if direccion == 1 else mt5.ORDER_TYPE_SELL, "deviation": 30,
+                   "magic": e["magic"], "comment": f"aurum_par_{clave}"[:31], "type_time": mt5.ORDER_TIME_GTC, "type_filling": self.filling(sim)}
+            r = Ejecutor.enviar(mt5, req, direccion)
+            if r is None or r.retcode != mt5.TRADE_RETCODE_DONE:
+                log("Par: error al abrir una pata: deshago el par", par=clave, simbolo=sim, retcode=getattr(r, "retcode", None))
+                for t in tickets:
+                    for p in mt5.positions_get(ticket=t) or []:
+                        self.cerrar(p, "par_ratio", "no se pudo abrir la otra pata")
+                enviar(f"❗ No pude abrir el par {clave} (código {getattr(r, 'retcode', None)}). No quedó nada abierto.")
+                return
+            tickets.append(r.order)
+            self.estado["riesgos"][str(r.order)] = riesgo / 2
+            publicar_senal(accion="ABRIR", id=r.order, estrategia="par_ratio", simbolo=sim, direccion=direccion, precio=r.price,
+                           sl_dist=dist_sl, tp_dist=0.0, magic=e["magic"])
+            registrar_operacion(accion="ABRIR", estrategia="par_ratio", simbolo=sim, direccion="COMPRA" if direccion == 1 else "VENTA",
+                                lote=lote, precio_pedido=precio, precio=r.price, sl=sl, tp=0.0, riesgo_usd=round(riesgo / 2, 2),
+                                motivo=f"par {clave} z={z:+.2f}")
+        self.estado["pares"][clave] = {"lado": lado, "e": sp, "m": m, "sd": sd, "tickets": tickets, "sesiones": 0}
+        guardar_json(RUTA_ESTADO, self.estado)
+        log("PAR ABIERTO", par=clave, lado=lado, z=round(z, 2), riesgo=round(riesgo, 2))
+        enviar(f"🟢 PAR ABIERTO {clave}: {'COMPRA ' + a + ' / VENTA ' + b if lado == 1 else 'VENTA ' + a + ' / COMPRA ' + b} "
+               f"(ratio a {z:+.1f} desviaciones). Riesgo ${riesgo:,.0f}. Sale cuando el ratio vuelva a la media.")
+
     # ---------- autocontrol ----------
     def revisar_autocontrol(self):
+        """Autocontrol estadístico (v2.1): compara las últimas N operaciones en vivo con lo que promete el backtest.
+        z = (suma real − suma esperada) / (desviación × √N).  z < −2 → riesgo a la mitad;  z < −3 → pausa 30 días
+        (vuelve sola, a medio riesgo). Una racha mala normal ya NO apaga una estrategia buena."""
         ac = self.cfg.get("autocontrol", {})
-        n, limite = ac.get("ultimas_operaciones", 20), ac.get("pausar_si_suma_R_menor_que", -8.0)
+        n = ac.get("ultimas_operaciones", 30)
         deals = mt5.history_deals_get(ahora_utc() - timedelta(days=365), datetime.now() + timedelta(days=1)) or []
         bal = mt5.account_info().balance
+        reducidas = self.estado.setdefault("reducidas", [])
+        desde = self.estado.setdefault("pausa_desde", {})
+        hoy = ahora_utc()
+        for nombre in list(self.estado["pausadas"]):  # las pausas vencen solas a los 30 días
+            if nombre in desde and hoy - datetime.fromisoformat(desde[nombre]) > timedelta(days=ac.get("dias_pausa", 30)):
+                self.estado["pausadas"].remove(nombre)
+                desde.pop(nombre)
+                if nombre not in reducidas:
+                    reducidas.append(nombre)
+                enviar(f"▶️ {nombre} vuelve a operar tras su pausa, con riesgo a la mitad hasta que se recupere.")
         for nombre, e in self.cfg["estrategias"].items():
             cierres = [d for d in deals if d.magic == e["magic"] and d.entry == mt5.DEAL_ENTRY_OUT][-n:]
-            if len(cierres) < n:
+            if len(cierres) < min(n, 20):
                 continue
-            suma_r = sum((d.profit + d.swap + d.commission) / (bal * self.cfg["riesgo_por_operacion"]) for d in cierres)
-            if suma_r < limite and nombre not in self.estado["pausadas"]:
+            R = [(d.profit + d.swap + d.commission) / (self.estado["riesgos"].get(str(d.position_id)) or bal * self.cfg["riesgo_por_operacion"])
+                 for d in cierres]
+            m = len(R)
+            media = sum(R) / m
+            sd = max((sum((x - media) ** 2 for x in R) / (m - 1)) ** 0.5, 0.5)
+            esperado = e.get("exp_backtest", 0.1)
+            z = (sum(R) - esperado * m) / (sd * m ** 0.5)
+            if z < ac.get("z_pausa", -3.0) and nombre not in self.estado["pausadas"]:
                 self.estado["pausadas"].append(nombre)
-                guardar_json(RUTA_ESTADO, self.estado)
-                log("AUTOCONTROL: estrategia pausada por mal rendimiento en vivo", estrategia=nombre, suma_R=round(suma_r, 1))
-                enviar(f"⏸️ Pausé la estrategia {nombre}: sus últimas {n} operaciones suman {suma_r:+.1f}R. Revísala con Claude.")
+                desde[nombre] = hoy.isoformat()
+                log("AUTOCONTROL: pausa (rinde muy por debajo del backtest)", estrategia=nombre, z=round(z, 2), suma_R=round(sum(R), 1))
+                enviar(f"⏸️ Pausé {nombre} 30 días: sus últimas {m} operaciones suman {sum(R):+.1f}R, {abs(z):.1f} desviaciones por debajo "
+                       f"de lo esperado (eso ya no parece mala suerte). Revísala con Claude.")
+            elif z < ac.get("z_reducir", -2.0) and nombre not in reducidas and nombre not in self.estado["pausadas"]:
+                reducidas.append(nombre)
+                log("AUTOCONTROL: riesgo a la mitad", estrategia=nombre, z=round(z, 2))
+                enviar(f"🔻 {nombre} rinde por debajo de lo esperado ({sum(R):+.1f}R en {m} ops, z {z:+.1f}): le bajo el riesgo a la mitad.")
+            elif z >= -1.0 and nombre in reducidas:
+                reducidas.remove(nombre)
+                enviar(f"✅ {nombre} se recuperó (z {z:+.1f}): vuelve a su riesgo normal.")
+        guardar_json(RUTA_ESTADO, self.estado)
 
     def activa(self, nombre):
         return self.cfg["estrategias"][nombre].get("activa") and nombre not in self.estado["pausadas"]
@@ -497,6 +720,11 @@ class Aurum:
         cfg = self.cfg
         bal = mt5.account_info().balance
         if self.resultado_hoy() <= -bal * cfg["perdida_diaria_max"]:
+            hoy = ahora_utc().date().isoformat()
+            if self.estado.get("stop_diario_avisado") != hoy:
+                self.estado["stop_diario_avisado"] = hoy
+                log("Stop diario alcanzado: no abro nada más hoy", resultado=round(self.resultado_hoy(), 2))
+                enviar(f"⛔ Stop diario: hoy se perdió {self.resultado_hoy():+,.2f}$ (límite {cfg['perdida_diaria_max']:.0%}). No abro más hasta mañana.")
             return  # stop diario: no se abre nada más hoy
         bloqueado = os.path.exists(RUTA_ALTO) or os.path.exists(RUTA_PAUSA)  # Guardián/Supervisor o tu /pausa: solo salidas
         candidatos = []
@@ -528,6 +756,32 @@ class Aurum:
                 if sen:
                     candidatos.append((f"{nombre}:{s}", nombre, s, sen[0], sen[1], 0.0, "señal D1"))
 
+        # --- estrategias del laboratorio (aprobadas por Explorador + Abogado del diablo) ---
+        for nombre, e in cfg["estrategias"].items():
+            if "familia_lab" not in e:
+                continue
+            for s in e["simbolos"]:
+                if not self.mercado_abierto(s):
+                    continue
+                d1 = self.barras(s, mt5.TIMEFRAME_D1, 400)
+                if len(d1) < 260 or not self.nueva_barra(f"{nombre}:{s}:D1", d1):
+                    continue
+                cap = senal_lab(e["familia_lab"], e["params"], [b["utc"].replace(tzinfo=None) for b in d1],
+                                [b["open"] for b in d1], [b["high"] for b in d1], [b["low"] for b in d1], [b["close"] for b in d1])
+                if not cap:
+                    continue
+                abiertas = self.posiciones(nombre, s)
+                for p in abiertas:
+                    direc = 1 if p.type == mt5.POSITION_TYPE_BUY else -1
+                    if (cap["xl"][-1] if direc == 1 else cap["xs"][-1]) or (cap["maxh"] and self.sesiones_desde(d1, p) >= cap["maxh"]):
+                        self.cerrar(p, nombre, "regla de salida")
+                if abiertas or not self.activa(nombre) or not cap["a"][-1]:
+                    continue
+                lado = 1 if cap["el"][-1] else -1 if cap["es"][-1] else 0
+                if lado:
+                    d = cap["slm"] * cap["a"][-1]
+                    candidatos.append((f"{nombre}:{s}", nombre, s, lado, d, cap["rr"] * d if cap["rr"] else 0.0, f"señal {e['familia_lab']}"))
+
         # --- ruptura asiática del oro en cada vela H1 nueva ---
         e = cfg["estrategias"]["ruptura_asiatica"]
         for s in e["simbolos"]:
@@ -545,6 +799,7 @@ class Aurum:
                 else:
                     candidatos.append((f"ruptura_asiatica:{s}", "ruptura_asiatica", s, sen[0], sen[1], sen[2], f"ruptura {sen[3]}"))
 
+        self.ciclo_pares(bloqueado, noticia)
         if bloqueado:
             if candidatos:
                 log("Bloqueo o pausa activa: no abro nuevas", señales=len(candidatos))

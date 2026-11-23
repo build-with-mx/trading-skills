@@ -16,7 +16,7 @@ DUR = {TIMEFRAME_H1: 3600, TIMEFRAME_D1: 86400}
 TFN = {TIMEFRAME_H1: "H1", TIMEFRAME_D1: "D1"}
 # valor por 1.0 de precio por lote = tick_value / tick_size
 SPEC = {"XAUUSD": (1.0, 0.01, 0.01, 0.01), "US500": (0.01, 0.01, 0.1, 0.1), "ETHUSD": (0.01, 0.01, 0.1, 0.1),
-        "GER40": (0.01, 0.01, 0.1, 0.1)}
+        "GER40": (0.01, 0.01, 0.1, 0.1), "US2000": (0.01, 0.01, 0.1, 0.1), "BTCUSD": (0.01, 0.01, 0.1, 0.1), "USTECH": (0.01, 0.01, 0.1, 0.1), "US30": (0.01, 0.01, 0.1, 0.1)}
 
 
 class Broker:
@@ -43,7 +43,8 @@ class Broker:
             dur = 3600 if k[1] == "H1" else 86400
             for b in self.data[k]:
                 fin = b[0] + dur
-                if fin <= self.T or fin > T or b[0] < p.t_utc:
+                # una vela diaria cuenta aunque la entrada fuera unas horas después de su apertura (las entradas D1 se hacen al abrir)
+                if fin <= self.T or fin > T or b[0] + (6 * 3600 if dur == 86400 else 0) < p.t_utc:
                     continue
                 compra = p.type == 0
                 if p.sl and ((compra and b[3] <= p.sl) or (not compra and b[2] >= p.sl)):
@@ -62,9 +63,34 @@ class Broker:
         cerradas = [b for b in self.data[k] if b[0] + dur <= self.T]
         return cerradas[-1] if cerradas else None
 
+    def spec(self, s):
+        """(valor por 1.0 de precio por lote, lote mínimo) con aproximaciones razonables para los mercados sin ficha."""
+        if s in SPEC:
+            tv, ts, vmin, _ = SPEC[s]
+            return tv / ts, vmin
+        b = self._barra_actual_raw(s)
+        p = b[4] if b else 1.0
+        if len(s) == 6 and s.isalpha():                      # divisas: contrato de 100,000
+            if s.endswith("USD"):
+                return 100000.0, 0.01
+            if s.endswith("JPY"):
+                return 100000.0 / 155.0, 0.01
+            return 100000.0 / p if s.startswith("USD") else 100000.0 / 1.3, 0.01
+        if s == "XAGUSD":
+            return 5000.0, 0.01
+        if s == "XPTUSD":
+            return 100.0, 0.01
+        return 1.0, 0.01                                      # índices, cripto, energía: $1 por punto
+
+    def _barra_actual_raw(self, s):
+        k = (s, "D1")
+        if k not in self.data:
+            return None
+        c = [b for b in self.data[k] if b[0] + 86400 <= self.T]
+        return c[-1] if c else None
+
     def vpp(self, s):
-        tv, ts, _, _ = SPEC[s]
-        return tv / ts
+        return self.spec(s)[0]
 
     def _cerrar(self, p, precio, t, motivo):
         d = 1 if p.type == 0 else -1
@@ -79,7 +105,7 @@ class Broker:
     def initialize(self, path=None, **k): return True
     def shutdown(self): pass
     def last_error(self): return (1, "Success")
-    def symbol_select(self, s, v=True): return s in SPEC
+    def symbol_select(self, s, v=True): return any(k[0] == s for k in self.data)
 
     def terminal_info(self): return NS(connected=True, trade_allowed=self.trade_allowed)
 
@@ -88,14 +114,14 @@ class Broker:
         return NS(login=self.login, trade_mode=self.trade_mode, balance=self.balance, equity=self.balance + flot, currency="USD", margin_free=self.balance)
 
     def symbol_info(self, s):
-        if s not in SPEC:
+        if not self.symbol_select(s):
             return None
-        tv, ts, vmin, step = SPEC[s]
-        return NS(trade_tick_value=tv, trade_tick_size=ts, volume_min=vmin, volume_step=step, volume_max=100.0, digits=2, point=0.01, filling_mode=1)
+        v, vmin = self.spec(s)
+        return NS(trade_tick_value=v * 0.00001, trade_tick_size=0.00001, volume_min=vmin, volume_step=vmin, volume_max=100.0, digits=5, point=0.00001, filling_mode=1)
 
     def symbol_info_tick(self, s):
         b = self._barra_actual(s)
-        if b is None or s not in SPEC:
+        if b is None:
             return None
         return NS(bid=b[4], ask=b[4] + max(b[5], 0.01), time=int(self.T + self.offset), last=b[4])
 

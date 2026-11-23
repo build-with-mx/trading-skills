@@ -48,6 +48,12 @@ def valor_por_precio(simbolo):
 
 
 def riesgo_posicion(p):
+    # pares: el SL de cada pata es de emergencia; su riesgo real (stop del ratio) lo guarda Aurum
+    cfg = cargar(RUTA_CONFIG, {})
+    if p.magic == cfg.get("estrategias", {}).get("par_ratio", {}).get("magic"):
+        r = cargar(os.path.join(CARPETA, "aurum_estado.json"), {}).get("riesgos", {}).get(str(p.ticket))
+        if r is not None:
+            return r
     if not p.sl:
         return None
     d = (p.price_open - p.sl) if p.type == mt5.POSITION_TYPE_BUY else (p.sl - p.price_open)

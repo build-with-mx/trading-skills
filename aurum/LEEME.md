@@ -1,19 +1,33 @@
-# Aurum 1.9 — equipo de bots de trading
+# Aurum 2.2 — equipo de bots de trading
 
-Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el filtro anti-suerte:
+Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el filtro anti-suerte **y** el Abogado del diablo:
 
-| Estrategia | Mercados | Revisa |
-|---|---|---|
-| Ruptura asiática | Oro (XAUUSD) | Cada vela de 1 hora |
-| Donchian (tendencia) | Oro, Ethereum, Bitcoin | Cada vela diaria |
-| RSI(2) (reversión) | S&P 500, Nasdaq, Dow, Russell 2000 | Cada vela diaria |
-| IBS (reversión) | Nasdaq, S&P 500 | Cada vela diaria |
+| Estrategia | Mercados | Revisa | Evidencia (5 años, datos de Axi) |
+|---|---|---|---|
+| Ruptura asiática | Oro (XAUUSD) | Cada vela de 1 hora | 195 ops, +0.23R, RESISTE |
+| Donchian (tendencia) | Oro, Ethereum, Bitcoin | Cada vela diaria | +0.24 a +0.31R, DUDOSA (pocas operaciones) |
+| RSI(2) (reversión) | S&P 500, Nasdaq, Dow, Russell 2000 | Cada vela diaria | +0.09 a +0.19R, RESISTE |
+| IBS (reversión) | Nasdaq, S&P 500 | Cada vela diaria | +0.12R, RESISTE |
+| **NR7** (nuevo) | **FTSE 100**, **GBP/USD** | Cada vela diaria | +0.48R / +0.29R, RESISTE |
+| **MACD** (nuevo) | **DAX**, **Solana** | Cada vela diaria | +0.17R / +0.46R, RESISTE |
+| **Cambio de mes** (nuevo) | Oro | Cada vela diaria | +0.24R, RESISTE |
+| Pares (reversión del ratio) | 6 pares | Cada vela diaria | **Apagada** hasta verificar su corrección |
+
+Las estrategias nuevas usan **el mismo motor del laboratorio** con el que se validaron (se comprobó que dan las mismas entradas que el backtest).
+
+**Cambios de reglas en 2.2 (medidos con un año simulado):**
+- **Reserva de 1% para la ruptura asiática:** las demás estrategias ya no llenan el riesgo abierto y la dejan fuera. Resultado: +$42k en vez de +$3k, y caída de 8% en vez de 16%.
+- **Autocontrol estadístico:** antes pausaba para siempre una estrategia tras −8R en 20 operaciones (le pasó a la ruptura en una racha normal). Ahora: 2 desviaciones por debajo del backtest → riesgo a la mitad; 3 → pausa de 30 días; se recupera sola.
+- **Ejecutor:** espera a que el spread se normalice y reintenta si el broker recotiza.
+- **Stop diario visible:** te avisa por Telegram cuando se alcanza.
+
+**Plan de riesgo:** primera semana al **1%** para confirmar que todo funciona en tu PC. Después, **2%** (mejor balance ganancia/caída en las pruebas). Para subir, ver la nota `topes_auditor` dentro de `aurum_config.json`.
 
 **Protecciones incluidas**
 - Solo opera la cuenta **10076749 en modo demo**: si detecta otra cuenta (por ejemplo la real), no arranca.
-- Riesgo de **1% por operación**, máximo **3% abierto** entre todas, **stop diario de −3%**.
+- Riesgo de **1% por operación** (subirá a 2% tras la primera semana), máximo **3% abierto** con 1% reservado a la ruptura, **stop diario de −3%**.
 - **Filtro de noticias**: no abre 30 min antes ni después de noticias de alto impacto de EE.UU. (calendario de Forex Factory).
-- **Autocontrol**: si una estrategia suma menos de −8R en sus últimas 20 operaciones en vivo, se pausa sola.
+- **Autocontrol estadístico**: compara cada estrategia con su backtest; baja el riesgo o pausa 30 días solo si ya no parece mala suerte.
 - Todas las operaciones con **Stop Loss** en el broker.
 - **Adopta** las posiciones que Claude ya abrió (oro con TP = ruptura; oro/ETH/BTC sin TP = Donchian) y las gestiona.
 

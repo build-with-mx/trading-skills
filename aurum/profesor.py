@@ -26,6 +26,12 @@ CARPETA = os.path.dirname(os.path.abspath(__file__))
 RUTA_DB = os.path.join(CARPETA, "aurum.db")
 RUTA_LECCIONES = os.path.join(CARPETA, "profesor_lecciones.md")
 BACKTEST_R = {"ruptura_asiatica": 0.22, "donchian": 0.30, "rsi2": 0.15, "ibs": 0.12}
+try:  # cada estrategia puede declarar su expectativa de backtest en aurum_config.json ("exp_backtest")
+    import json as _json
+    _cfg = _json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "aurum_config.json"), encoding="utf-8"))
+    BACKTEST_R.update({n: e["exp_backtest"] for n, e in _cfg.get("estrategias", {}).items() if "exp_backtest" in e})
+except Exception:
+    pass
 MIN_GRUPO = 10
 
 

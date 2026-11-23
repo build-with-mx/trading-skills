@@ -115,6 +115,12 @@ def cargar_m(simbolo, tf):
 
 def revisar():
     objetivos = [("ACTIVA " + n, s, tf, f, p) for n, s, tf, f, p in ACTIVAS]
+    try:  # estrategias del laboratorio activas en Aurum
+        cfg = json.load(open(os.path.join(CARPETA, "aurum_config.json"), encoding="utf-8"))
+        objetivos += [("ACTIVA " + n, s, "D1", e["familia_lab"], tuple(e["params"])) for n, e in cfg["estrategias"].items()
+                      if e.get("familia_lab") and e.get("activa") for s in e["simbolos"]]
+    except Exception:
+        pass
     cand = json.load(open(RUTA_CAND, encoding="utf-8")) if os.path.exists(RUTA_CAND) else []
     objetivos += [(f"candidata {c['familia']}", c["simbolo"], c["tf"], c["familia"], tuple(c["params"]))
                   for c in cand if c.get("estado") in ("sombra", "aprobada_papel")]

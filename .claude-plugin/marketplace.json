@@ -1,0 +1,12 @@
+{
+  "name": "trading-skills",
+  "owner": { "name": "trading-skills" },
+  "plugins": [
+    {
+      "name": "trading-pro",
+      "source": "./plugins/trading-pro",
+      "description": "Skills de trading para oro y Nasdaq: riesgo, backtesting, bots MT5, checklist, noticias, psicologia, revision semanal, fondeo y creador de skills.",
+      "version": "1.0.0"
+    }
+  ]
+}

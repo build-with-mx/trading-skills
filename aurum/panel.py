@@ -78,6 +78,7 @@ def generar(cuenta=None, posiciones=None):
                      ("Factor de riesgo", f"×{met.get('factor_riesgo', 1):g}")]
     tarjetas.append(("Modo precaución", "SÍ" if vig.get("modo_precaucion") else "no"))
     tarjetas.append(("Bloqueo", e(bloqueo.split(":")[0]) if bloqueo else "ninguno"))
+    tarjetas.append(("Pausa manual", "SÍ" if os.path.exists(os.path.join(CARPETA, "aurum_PAUSA.flag")) else "no"))
     html_tarjetas = "".join(f'<div class="tarjeta"><div class="et">{e(k)}</div><div class="v">{v}</div></div>' for k, v in tarjetas)
 
     pos = tabla(["Símbolo", "Dirección", "Lote", "Entrada", "SL", "TP", "Resultado"],

@@ -33,6 +33,7 @@ LATIDOS = {
     "Auditor": ("auditor_reporte.md", 130),
     "Panel": ("panel.html", 5),
     "Archivista": ("archivista_estado.json", 3),
+    "Centralita": ("centralita_estado.json", 5),
 }
 
 

@@ -105,7 +105,8 @@ def paso(info, cfg, g, est):
 
     # 2) pérdida del día
     perdida_dia = (info.equity - est["balance_inicio_dia"]) / est["balance_inicio_dia"]
-    if perdida_dia <= -cfg["perdida_diaria_max"] and not os.path.exists(RUTA_ALTO):
+    alto = open(RUTA_ALTO).read() if os.path.exists(RUTA_ALTO) else ""
+    if perdida_dia <= -cfg["perdida_diaria_max"] and not alto.startswith(("DIARIO", "TOTAL")):  # otros bloqueos no impiden el stop
         with open(RUTA_ALTO, "w") as f:
             f.write(f"DIARIO {hoy} pérdida {perdida_dia:.2%}")
         cerrar_todo(f"pérdida del día {perdida_dia:.2%} (límite {cfg['perdida_diaria_max']:.0%})")

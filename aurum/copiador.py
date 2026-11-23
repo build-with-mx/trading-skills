@@ -147,6 +147,8 @@ class Copiador:
             return f"el símbolo {s} no existe en esta cuenta (revisa mapa_simbolos)"
         if os.path.exists(self.ruta_alto):
             return "bloqueado por el Supervisor de fondeo"
+        if os.path.exists(os.path.join(CARPETA, "aurum_PAUSA.flag")):
+            return "pausa manual (/pausa en Telegram)"
         tick, info = mt5.symbol_info_tick(s), mt5.symbol_info(s)
         d = ev["direccion"]
         precio = tick.ask if d == 1 else tick.bid

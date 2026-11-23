@@ -1,4 +1,4 @@
-# Aurum 1.7 — equipo de bots de trading
+# Aurum 1.8 — equipo de bots de trading
 
 Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el filtro anti-suerte:
 
@@ -86,8 +86,19 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 4. Prueba:  `python mensajero.py`  → debe llegarte un mensaje al celular.
 **No compartas `telegram.json` con nadie** (contiene la llave de tu bot).
 
+## 📟 Control desde el celular (Centralita)
+Con Telegram configurado, escríbele a tu bot:
+| Comando | Qué hace |
+|---|---|
+| `/estado` | Balance, equity, posiciones, bloqueos, modo precaución y metas |
+| `/posiciones` · `/hoy` · `/bots` | Posiciones abiertas, cerradas de hoy y salud del equipo |
+| `/pausa` | Aurum y los Copiadores dejan de **abrir** operaciones (las abiertas siguen protegidas por su SL) |
+| `/reanudar` | Quita tu pausa. **No** quita los bloqueos del Guardián ni del Supervisor (esos son por seguridad) |
+| `/cerrar_todo CONFIRMO` | Cierra todas las posiciones de la demo de Aurum y pausa |
+Solo obedece a **tu** chat: si otra persona le escribe a tu bot, la ignora.
+
 ## Arrancar
-Doble clic en **`INICIAR_TODO.bat`**: se abren 18 ventanas (Guardián, Minero, Contador, Vigía, Sombra, Explorador, Estratega, Mecánico, Respaldo, Panel, Auditor, Archivista, Profesor, Abogado del diablo, Estacional, Analista COT, Calendario de resultados y Aurum). La primera vez el Minero tarda ~1 minuto en llenar `datos.db` y el Explorador hará su primera búsqueda (unos minutos). Si alguno se cae, se reinicia solo a los 15 segundos. **Deja las ventanas abiertas** (puedes minimizarlas) y que la PC no se suspenda.
+Doble clic en **`INICIAR_TODO.bat`**: se abren 19 ventanas (Centralita, Guardián, Minero, Contador, Vigía, Sombra, Explorador, Estratega, Mecánico, Respaldo, Panel, Auditor, Archivista, Profesor, Abogado del diablo, Estacional, Analista COT, Calendario de resultados y Aurum). La primera vez el Minero tarda ~1 minuto en llenar `datos.db` y el Explorador hará su primera búsqueda (unos minutos). Si alguno se cae, se reinicia solo a los 15 segundos. **Deja las ventanas abiertas** (puedes minimizarlas) y que la PC no se suspenda.
 (Manual: `python guardian.py`, `python contador.py`, `python aurum.py` en ventanas separadas.)
 
 ### Si el Guardián bloquea

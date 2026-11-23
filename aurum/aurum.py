@@ -33,8 +33,9 @@ RUTA_CONFIG = os.path.join(CARPETA, "aurum_config.json")
 RUTA_ESTADO = os.path.join(CARPETA, "aurum_estado.json")
 RUTA_OPS = os.path.join(CARPETA, "aurum_operaciones.csv")
 RUTA_LOG = os.path.join(CARPETA, "aurum_eventos.log")
-VERSION = "1.7.0"
+VERSION = "1.8.0"
 RUTA_ALTO = os.path.join(CARPETA, "aurum_ALTO.flag")
+RUTA_PAUSA = os.path.join(CARPETA, "aurum_PAUSA.flag")  # pausa manual (Centralita /pausa)
 RUTA_VIGIA = os.path.join(CARPETA, "vigia_estado.json")
 RUTA_METAS = os.path.join(CARPETA, "metas_estado.json")
 RUTA_SENALES = os.path.join(CARPETA, "senales_maestro.jsonl")  # para el Copiador
@@ -497,7 +498,7 @@ class Aurum:
         bal = mt5.account_info().balance
         if self.resultado_hoy() <= -bal * cfg["perdida_diaria_max"]:
             return  # stop diario: no se abre nada más hoy
-        bloqueado = os.path.exists(RUTA_ALTO)  # el Guardián frenó: solo se gestionan salidas
+        bloqueado = os.path.exists(RUTA_ALTO) or os.path.exists(RUTA_PAUSA)  # Guardián/Supervisor o tu /pausa: solo salidas
         candidatos = []
         noticia = self.bloqueo_noticias()
 
@@ -546,7 +547,7 @@ class Aurum:
 
         if bloqueado:
             if candidatos:
-                log("Guardián activo (aurum_ALTO.flag): no abro nuevas", señales=len(candidatos))
+                log("Bloqueo o pausa activa: no abro nuevas", señales=len(candidatos))
             guardar_json(RUTA_ESTADO, self.estado)
             return
         # --- abrir por prioridad ---

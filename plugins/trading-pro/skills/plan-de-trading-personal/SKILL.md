@@ -17,7 +17,7 @@ Español, corto. Es la referencia que manda sobre cualquier impulso del momento.
 |---|---|---|---|
 | Ruptura asiática (`estrategia-ruptura-asiatica-oro`) | Oro H1 | Backtest ✔ → **demo en curso** | Tarea horaria 1:03-10:03 MTY, lun-vie |
 | RSI(2) (`estrategia-rsi2-indices`) | US500, US2000, USTECH, US30 D1 | Backtest ✔ → **demo en curso** | Tarea "Estrategias diarias" 17:10 MTY, dom-jue |
-| Tendencia Donchian 20 (`estrategia-tendencia-donchian`) | USDJPY, XAGUSD, ETHUSD, BTCUSD D1 | Backtest ✔ → **demo en curso** | Tarea "Estrategias diarias" 17:10 MTY, dom-jue |
+| Tendencia Donchian 20 (`estrategia-tendencia-donchian`) | Oro, ETHUSD, BTCUSD D1 | Backtest ✔ → **demo en curso** | Tarea "Estrategias diarias" 17:10 MTY, dom-jue |
 | ORB Nueva York (`orb-apertura-nueva-york`) | Nasdaq M15 | En observación | No |
 | Máx/mín día anterior, Donchian | Oro / índices | En observación (`laboratorio-estrategias`) | No |
 | Scalping M1 (`scalping-micro-oro`) | Oro | Descartada | No |
@@ -38,6 +38,7 @@ Español, corto. Es la referencia que manda sobre cualquier impulso del momento.
 - Una estrategia nueva entra al plan solo tras backtest + 30-50 operaciones en demo.
 
 ## Historial de cambios
+- 2026-11-23: megalab de 28,640 combinaciones con validación fuera de muestra → Donchian: fuera USDJPY y plata, entra oro.
 - 2026-11-23: nueva demo 10076749 de $100k (ensayo de fondeo), riesgo 0.5%; se añaden USTECH y US30 (RSI2) y XAGUSD y BTCUSD (Donchian), que no cabían en $5k.
 - 2026-11-23: investigación en 13 mercados → añadidos RSI(2) en US2000 y Donchian en USDJPY y ETHUSD a la demo.
 - 2026-11-23: añadida RSI(2) en US500 a demo (Nasdaq no operable: lote mínimo ≈5% de riesgo).

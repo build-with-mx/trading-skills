@@ -15,6 +15,17 @@ Español, corto. Objetivo: encontrar ventajas **robustas**, no la mejor curva. R
 5. **Viabilidad**: comprobar que el lote mínimo cabe en 1% de riesgo (`get_mt5_available_markets`).
 6. Si pasa → skill propia con `creador-skills-trading` (estado `backtest`) → demo 30-50 ops.
 
+## Megalaboratorio (miles de variantes con validación fuera de muestra)
+- `python3 -I scripts/megalab.py config.json resultados.csv` → prueba 7 familias D1 (RSI-k, Donchian, cruce de medias, Bollinger, ruptura N días con RR, rachas, momentum) + rupturas de sesión H1 + **150 estrategias al azar por mercado** como control. `config.json` = `{"d1": {"SIMB": [json_D1, digits]}, "h1": {"SIMB": [csv_H1, costo]}}`. Usa 4 núcleos; ~28k combinaciones en pocos minutos.
+- `python3 -I scripts/analisis.py resultados.csv` → compara contra el azar y lista zonas robustas.
+- **Regla de oro**: IS = primer 60% del tiempo (para elegir), OOS = último 40% (nunca se usa para elegir). Una zona (familia × mercado) se aprueba solo si ≥ 60% de sus variantes son positivas en IS **y** OOS (el azar logra ~25%) y la expectativa mediana es > +0.05R en ambos.
+
+### Resultado 2026-11-23 (28,640 combinaciones, 16 mercados D1 de 5 años + 6 mercados H1 de 1 año)
+- **Casi todo es ruido**: de las variantes elegidas por verse bien en IS, solo 57% siguió positiva en OOS (azar: 52%). Elegir "la mejor" de miles = elegir suerte.
+- **Zonas aprobadas** (% variantes positivas IS y OOS): Donchian oro **100%**, RSI US500 **91%**, ruptura N días (RR) oro 91%, RSI USTECH 85%, Donchian ETH 78% (N=20: 92%), Donchian BTC 63% (N=20: 89%). La config exacta de RSI(2) de la skill es positiva en IS y OOS en US500, USTECH, US30 y US2000. Ruptura asiática oro: IS +0.24R, OOS +0.22R ✔.
+- **Reprobadas que parecían buenas con los 5 años completos**: Donchian **USDJPY** (IS +0.42R → OOS −0.37R, 0%) y Donchian **plata** (IS negativa, OOS positiva: inconsistente) → retiradas de la demo.
+- Peores zonas: Donchian en GBPUSD, US30, US2000, AUDUSD; Bollinger en USDCAD; rupturas de sesión H1 fuera del oro.
+
 ## Registro de pruebas (actualizar siempre)
 | Estrategia | Mercado | Datos | Resultado | Veredicto |
 |---|---|---|---|---|
@@ -25,9 +36,11 @@ Español, corto. Objetivo: encontrar ventajas **robustas**, no la mejor curva. R
 | RSI(2) D1 | US30 | 5 años | 12/12 +, pero lote mín. ≈ 5% de riesgo | ⏸️ No operable con $5k |
 | RSI(2) D1 | GBPUSD / USOIL | 5 años | 11/12 +, 4/5 años, +4.1R / +1.8R | 🔎 Observación |
 | RSI(2) D1 | EURUSD, AUDUSD, USDCAD, USDJPY, XAG, ETH | 5 años | ≤ 6/12 | ❌ |
-| **Donchian 20 D1** | **USDJPY** | 5 años | +9.7R, 4/4 variantes +, 3/5 años | ✅ **Demo** |
+| Donchian 20 D1 | USDJPY | 5 años | +9.7R en total, pero OOS −0.37R (0% de variantes OK fuera de muestra) | ❌ Retirada (megalab) |
 | **Donchian 20 D1** | **ETHUSD** | 5 años | +10.5R, 4/4 +, 5/5 años (ETH −60%) | ✅ **Demo** |
-| Donchian 20 D1 | XAGUSD / BTCUSD | 5 años | 4/4 +, pero lote mín. $280 / $718 | ⏸️ No operable con $5k |
+| Donchian 20 D1 | XAGUSD | 5 años | IS negativa / OOS positiva: inconsistente | ❌ Retirada (megalab) |
+| Donchian 20 D1 | BTCUSD | 5 años | 89% variantes OK en IS y OOS; lote mín. $718 | ✅ Demo (se salta si el lote mín. > 0.5%) |
+| **Donchian 20 D1** | **Oro** | 5 años | **100% variantes OK en IS y OOS** | ✅ **Demo** |
 | Donchian D1 | EURUSD, GBPUSD, AUDUSD, US30, US2000, GER40 | 5 años | 0/4 | ❌ |
 | RSI(2) D1 | Nasdaq | 5 años | 12/12 variantes +, pero lote mín. = ~5% de riesgo | ⏸️ No operable con $5k |
 | RSI(2) D1 | Oro | 5 años | ≈ 0 | ❌ |

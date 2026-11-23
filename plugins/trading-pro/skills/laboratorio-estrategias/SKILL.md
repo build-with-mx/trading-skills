@@ -1,0 +1,42 @@
+---
+name: laboratorio-estrategias
+description: "Laboratorio para probar muchas estrategias a la vez en oro, Nasdaq y S&P (diario y H1): Donchian (tendencia), RSI(2) (reversión), ruptura del máximo/mínimo del día anterior y falsa ruptura asiática, con costos, bloques de tiempo y prueba de robustez. Incluye el registro de TODO lo probado y su veredicto. Usar cuando el usuario pida 'prueba más estrategias', 'qué más funciona', 'no solo Asia', 'busca otra estrategia', o antes de investigar algo para no repetir pruebas."
+---
+
+# Laboratorio de estrategias
+
+Español, corto. Objetivo: encontrar ventajas **robustas**, no la mejor curva. Repetir pruebas cada 3-6 meses con datos nuevos.
+
+## Método obligatorio
+1. Datos: `get_mt5_candles` (D1 hasta 5 años; H1 hasta 1 año; M15 de 30 en 30 días). Salidas grandes se guardan en archivo.
+2. Correr: `python3 scripts/laboratorio.py diario --json D1.json --costo X` o `... h1 --csv H1.csv --costo X` (oro 0.3, USTECH 1.0, US500 0.6).
+3. **Robustez**: variar cada parámetro ±1 paso. Aceptar solo si la mayoría de variantes es positiva y positiva en la mayoría de bloques. Elegir la configuración del **centro** de la zona estable, nunca la mejor.
+4. **Control**: probar en otro mercado; si "funciona en todo", sospechar. Si funciona solo donde tiene lógica, mejor señal.
+5. **Viabilidad**: comprobar que el lote mínimo cabe en 1% de riesgo (`get_mt5_available_markets`).
+6. Si pasa → skill propia con `creador-skills-trading` (estado `backtest`) → demo 30-50 ops.
+
+## Registro de pruebas (actualizar siempre)
+| Estrategia | Mercado | Datos | Resultado | Veredicto |
+|---|---|---|---|---|
+| Ruptura asiática H1 | Oro | 1 año | +32.9R, 4/4 bloques, 16/18 variantes + | ✅ **Demo en curso** |
+| Ruptura asiática H1 | Nasdaq | 1 año | 18/18 variantes − | ❌ |
+| **RSI(2) D1** | **US500** | 5 años | +9.6R, 24/24 variantes +, DD 2.3R | ✅ **Demo** |
+| RSI(2) D1 | Nasdaq | 5 años | 12/12 variantes +, pero lote mín. = ~5% de riesgo | ⏸️ No operable con $5k |
+| RSI(2) D1 | Oro | 5 años | ≈ 0 | ❌ |
+| Máx/mín del día anterior H1 (RR 1.5) | Oro | 1 año | +17 a +33R según horario, 3/4 bloques (1er bloque −) | 🔎 Observación; correlacionada con la ruptura asiática |
+| Máx/mín del día anterior H1 | Nasdaq | 1 año | negativa | ❌ |
+| Donchian 20 solo compras D1 | Oro | 5 años | +16.7R, 5/5 años, solo 22 ops; oro alcista en el periodo | 🔎 Observación (sesgo de mercado alcista) |
+| Donchian 55 D1 | Oro | 5 años | +44R pero 37R vienen de un solo año | ❌ Depende de un outlier |
+| Donchian 20/55 solo compras D1 | Nasdaq | 5 años | +9 a +11R, pocas ops | 🔎 Observación |
+| Falsa ruptura asiática H1 | Oro | 1 año | un bloque explica todo, DD 17-28R | ❌ |
+| Falsa ruptura asiática H1 | Nasdaq | 1 año | −29 a −40R | ❌ |
+| ORB Nueva York M15 | Nasdaq | 3 meses | +8R pero cambia de signo entre mitades | 🔎 Observación |
+| ORB Nueva York M15 | Oro | 3 meses | mayoría negativa | ❌ |
+| Scalping M1 (4 señales) | Oro | 11 días | todas negativas, = azar | ❌ |
+
+## Ideas en cola
+Ruptura de Londres en oro (08:00 UTC) · RSI(2) en US30/GER40 · Donchian en cartera (oro + índices) · filtro de volatilidad (ATR alto/bajo) sobre la ruptura asiática · días posteriores a gaps del lunes.
+
+## Reglas de seguridad (heredadas)
+- Riesgo máx. 1% por operación, 2% abierto total, stop diario 3%. Siempre con Stop Loss.
+- Resultados pasados no garantizan resultados futuros. Claude no es asesor financiero.

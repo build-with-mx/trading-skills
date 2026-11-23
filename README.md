@@ -1,6 +1,6 @@
 # Trading Skills
 
-Plugin con 17 skills de trading (oro y Nasdaq, MT5 vía Axi).
+Plugin con 19 skills de trading (oro y Nasdaq, MT5 vía Axi).
 
 | Skill | Para qué |
 |---|---|
@@ -21,6 +21,8 @@ Plugin con 17 skills de trading (oro y Nasdaq, MT5 vía Axi).
 | correlaciones-intermercado | Dólar, tasas, VIX vs oro/Nasdaq |
 | estructura-mercado-smc | Estructura y liquidez con reglas medibles |
 | plan-de-trading-personal | Tu plan: metas, estrategias, reglas |
+| estrategia-rsi2-indices | RSI(2) diario en S&P 500 (backtest 24/24 +) |
+| laboratorio-estrategias | Prueba muchas estrategias + registro de resultados |
 
 ## Instalar en Claude Code
 ```

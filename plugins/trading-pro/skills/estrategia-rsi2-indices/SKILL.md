@@ -1,6 +1,6 @@
 ---
 name: estrategia-rsi2-indices
-description: "Estrategia de reversión a la media RSI(2) en índices de EE.UU. en diario (activa en demo: S&P 500 = US500 y Russell 2000 = US2000; Nasdaq y Dow validados pero el lote mínimo no cabe en $5k): comprar caídas cortas dentro de tendencia alcista y vender subidas cortas en tendencia bajista, salir al cruzar la media de 5 días. Reglas exactas, backtest de 5 años, tamaño de lote y cómo revisarla cada día. Usar cuando el usuario diga 'RSI2', 'RSI de 2', 'reversión en índices', 'estrategia del S&P', 'estrategia diaria', o pida operar/revisar esta estrategia."
+description: "Estrategia de reversión a la media RSI(2) en índices de EE.UU. en diario (activa en la demo de $100k: S&P 500 = US500, Russell 2000 = US2000, Nasdaq = USTECH y Dow = US30): comprar caídas cortas dentro de tendencia alcista y vender subidas cortas en tendencia bajista, salir al cruzar la media de 5 días. Reglas exactas, backtest de 5 años, tamaño de lote y cómo revisarla cada día. Usar cuando el usuario diga 'RSI2', 'RSI de 2', 'reversión en índices', 'estrategia del S&P', 'estrategia diaria', o pida operar/revisar esta estrategia."
 ---
 
 # RSI(2) en índices — US500 y US2000 (D1)
@@ -36,6 +36,9 @@ Indicadores sobre velas D1 **cerradas**: SMA200 y SMA5 del cierre, RSI(2) de Wil
 2. Si hay posición US500 abierta: ¿la última vela cerró al otro lado de la SMA5, o pasaron 10 sesiones? → cerrar con `close_mt5_position`. Si no, mantener.
 3. Si no hay posición: ¿señal en la última vela cerrada? → filtros (riesgo abierto total ≤ 2%, pérdida del día < 3%) → abrir con SL.
 4. Reportar en una línea si no hay nada; con detalle si abre o cierra.
+
+## Cuenta y riesgo actuales
+- Demo MT5 **10076749** ($100k): riesgo **0.5%** por operación (sustituye al 1% de las fórmulas de lote), máx. 2% abierto total entre todas las estrategias.
 
 ## Reglas de seguridad (heredadas)
 - Riesgo máx. 1% por operación, 2% abierto total, stop diario 3%. Siempre con Stop Loss.

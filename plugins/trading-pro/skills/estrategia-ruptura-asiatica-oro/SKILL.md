@@ -21,7 +21,7 @@ Español, corto y directo. Las velas de Axi vienen en **UTC**; Monterrey = UTC-6
 1. `get_mt5_candles` XAUUSD H1 desde las 00:00 UTC de hoy (y ~20 velas previas para el ATR).
 2. Calcular máximo/mínimo del rango, ATR(14), y si ya hubo una vela cerrada fuera del rango después de las 06:00 UTC.
 3. Responder: rango (máx/mín), estado (`esperando` / `gatillo compra` / `gatillo venta` / `ya operada hoy` / `ventana cerrada`), y si hay gatillo: entrada, SL, TP, lote y riesgo en $.
-4. En la **demo 10076734** puede ejecutarse según las reglas de `trading-completo`. En **real**: solo con confirmación explícita del usuario.
+4. En la **demo 10076749** puede ejecutarse según las reglas de `trading-completo`. En **real**: solo con confirmación explícita del usuario.
 
 ## Estado de validación
 - **Estado: backtest** (falta demo). Próximo paso: 30-50 operaciones en demo con registro.
@@ -36,6 +36,9 @@ Español, corto y directo. Las velas de Axi vienen en **UTC**; Monterrey = UTC-6
 ## Expectativas realistas
 - Rachas de 6+ pérdidas seguidas son normales (≈6% de DD a 1% de riesgo).
 - ~15 operaciones/mes. A +0.18R y 1% de riesgo ≈ +2-3% mensual **si** el comportamiento pasado se mantiene, lo cual no está garantizado.
+
+## Cuenta y riesgo actuales
+- Demo MT5 **10076749** ($100k): riesgo **0.5%** por operación (sustituye al 1% de las fórmulas de lote), máx. 2% abierto total entre todas las estrategias.
 
 ## Reglas de seguridad (heredadas)
 - Riesgo máx. 1% por operación, 2% abierto total, stop diario 3%. Siempre con Stop Loss.

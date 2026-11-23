@@ -1,6 +1,6 @@
 ---
 name: estrategia-tendencia-donchian
-description: "Estrategia de seguimiento de tendencia Donchian 20 en diario (activa en demo para USDJPY y Ethereum ETHUSD; validada también en plata y Bitcoin pero el lote mínimo no cabe en $5k): entrar cuando el precio cierra en máximo/mínimo de 20 días, salir con el canal de 10 días. Reglas exactas, backtest de 5 años en 13 mercados, lote y revisión diaria. Usar cuando el usuario diga 'Donchian', 'seguimiento de tendencia', 'tortugas', 'estrategia de tendencia', 'yen', 'ethereum', 'cripto', o pida operar/revisar esta estrategia."
+description: "Estrategia de seguimiento de tendencia Donchian 20 en diario (activa en la demo de $100k en USDJPY, plata XAGUSD, Ethereum ETHUSD y Bitcoin BTCUSD): entrar cuando el precio cierra en máximo/mínimo de 20 días, salir con el canal de 10 días. Reglas exactas, backtest de 5 años en 13 mercados, lote y revisión diaria. Usar cuando el usuario diga 'Donchian', 'seguimiento de tendencia', 'tortugas', 'estrategia de tendencia', 'yen', 'ethereum', 'cripto', o pida operar/revisar esta estrategia."
 ---
 
 # Tendencia Donchian 20 — USDJPY y ETHUSD (D1)
@@ -22,8 +22,8 @@ Español, corto. Estrategia de **pocas ganadoras grandes y muchas perdedoras peq
 |---|---|---|---|---|
 | **ETHUSD** | +10.5R (solo compras +12.7R) | 4/4 | **5/5** (ETH cayó −60% en el periodo: gana en ambos sentidos) | $22 |
 | **USDJPY** | +9.7R (solo compras +10.8R) | 4/4 | 3/5 | $11 |
-| XAGUSD | +4.6R | 4/4 | 3/5 | $280 → no cabe |
-| BTCUSD | +9.4R | 4/4 | 3/5 | $718 → no cabe |
+| XAGUSD | +4.6R | 4/4 | 3/5 | $280 (cabe en $100k) |
+| BTCUSD | +9.4R | 4/4 | 3/5 | $718 (> 0.5% de $100k: se salta hasta que baje la volatilidad) |
 | Oro (solo compras) | +16.7R | — | 5/5 | ver `laboratorio-estrategias` |
 | EURUSD, GBPUSD, AUDUSD, US30, US2000, GER40 | negativa | 0/4 | — | ❌ No usar |
 Conclusión: la tendencia funciona en mercados con tendencias largas (yen, metales, cripto), no en índices de acciones ni en EUR/GBP/AUD.
@@ -37,6 +37,9 @@ Conclusión: la tendencia funciona en mercados con tendencias largas (yen, metal
 1. `get_mt5_candles` D1 ~60 días de USDJPY y ETHUSD.
 2. Con posición: ¿cierre al otro lado del canal de 10? → `close_mt5_position`. Si no, mantener sin tocar.
 3. Sin posición: ¿cierre fuera del canal de 20? → filtros (riesgo abierto total ≤ 2%, pérdida del día < 3%) → abrir con SL.
+
+## Cuenta y riesgo actuales
+- Demo MT5 **10076749** ($100k): riesgo **0.5%** por operación (sustituye al 1% de las fórmulas de lote), máx. 2% abierto total entre todas las estrategias.
 
 ## Reglas de seguridad (heredadas)
 - Riesgo máx. 1% por operación, 2% abierto total, stop diario 3%. Siempre con Stop Loss.

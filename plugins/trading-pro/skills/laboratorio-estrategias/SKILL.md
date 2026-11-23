@@ -36,6 +36,11 @@ Español, corto. Objetivo: encontrar ventajas **robustas**, no la mejor curva. R
 - **IBS** (0.2/0.7/SMA200/SL2): USTECH 100%, US500 67% → ✅ demo (`estrategia-ibs-indices`). Solo 19-26% de sus entradas coinciden con RSI(2) → operaciones nuevas. US30 IS≈0 y US2000 17% → ❌.
 - **Donchian H4**: 100% en oro/ETH/BTC, pero duplica la exposición de Donchian D1 → documentado, no añadido.
 
+### Estudio 3 (23-nov, 5:30 am)
+- Ruptura asiática oro + filtros: tendencia D1 (SMA50/200) y volatilidad (percentil ATR) → ninguno mejora en IS y OOS a la vez; positiva en todos los regímenes → **sin filtro**.
+- RSI(2) GBPUSD 34% y USOIL 22% de variantes OK fuera de muestra → ❌ descartadas (de "observación" a descartadas).
+- Swap: ver sección en `gestion-riesgo-avanzada`; cripto ~0.1R por operación de 20 días → medir en la demo.
+
 ## Registro de pruebas (actualizar siempre)
 | Estrategia | Mercado | Datos | Resultado | Veredicto |
 |---|---|---|---|---|
@@ -44,7 +49,7 @@ Español, corto. Objetivo: encontrar ventajas **robustas**, no la mejor curva. R
 | **RSI(2) D1** | **US500** | 5 años | +9.6R, 24/24 variantes +, DD 2.3R | ✅ **Demo** |
 | **RSI(2) D1** | **US2000** | 5 años | +7.5R, 12/12 variantes +, 5/5 años | ✅ **Demo** |
 | RSI(2) D1 | US30 | 5 años | 12/12 +, pero lote mín. ≈ 5% de riesgo | ⏸️ No operable con $5k |
-| RSI(2) D1 | GBPUSD / USOIL | 5 años | 11/12 +, 4/5 años, +4.1R / +1.8R | 🔎 Observación |
+| RSI(2) D1 | GBPUSD / USOIL | 5 años | 11/12 + con 5 años completos, pero fuera de muestra 34% / 22% (= azar) | ❌ Descartadas (estudio 3) |
 | RSI(2) D1 | EURUSD, AUDUSD, USDCAD, USDJPY, XAG, ETH | 5 años | ≤ 6/12 | ❌ |
 | Donchian 20 D1 | USDJPY | 5 años | +9.7R en total, pero OOS −0.37R (0% de variantes OK fuera de muestra) | ❌ Retirada (megalab) |
 | **Donchian 20 D1** | **ETHUSD** | 5 años | +10.5R, 4/4 +, 5/5 años (ETH −60%) | ✅ **Demo** |

@@ -43,6 +43,13 @@ Con más riesgo la meta llega antes **solo si nada sale mal**; la probabilidad d
 - Profit factor = ganancias brutas / pérdidas brutas (> 1.3 aceptable, > 1.7 bueno).
 - Escalar riesgo solo con 50+ operaciones de expectativa positiva y DD controlado.
 
+## Costos de swap (financiamiento nocturno)
+- Cada posición que pasa la noche paga (o cobra) swap. Fórmula típica: **valor de la posición × tasa anual / 365** por noche. Fin de semana = swap triple: en divisas y metales suele cobrarse el **miércoles**; en índices y cripto, el **viernes** (varía por broker: comprobar en MT5).
+- En Axi: la tasa está en el campo **"Swap"** de la especificación del símbolo en MT5 (Market Watch → Especificación). Se aplica alrededor de las 17:00 de Nueva York. Las cuentas sin swap cobran a cambio una comisión de mantenimiento.
+- **Cripto es caro**: referencias públicas de ~25% anual (≈0.07% del valor por día). Ejemplo: venta ETH 2.2 lotes (~$3,800 de valor) ≈ $2.6/día → en 20 días ≈ $50 ≈ 0.1R de una operación de $500 de riesgo. Con una ventaja de +0.2 a +0.3R por operación, el swap puede comerse un tercio.
+- **Regla**: para estrategias que mantienen días o semanas (Donchian, RSI2, IBS), anotar el swap real cobrado en cada cierre y restarlo en la revisión semanal; si en cripto el swap supera ~0.1R por operación de media, reevaluar.
+- Fuentes: [Axi – fees and charges](https://www.axi.com/int/fees-and-charges), [Axi – swaps en CFDs](https://www.axi.com/int/zendesk-faqs/cfds/are-there-any-swaps-or-overnight-fees-for-holding-a-cfd-position), [Oanda – financing costs](https://oanda.com/au-en/trading/financing-costs), [IG – overnight funding](https://www.ig.com/en/help-and-support/cfds/fees-and-charges/why-is-overnight-funding-charged-and-how-is-it-calculated-), [Blueberry – swap triple](https://intercom.help/blueberry-global/en/articles/12007870-why-are-swap-rates-tripled-on-wednesdays-and-fridays).
+
 ## Reglas de seguridad (heredadas)
 - Riesgo máx. 1% por operación, 2% abierto total, stop diario 3%. Siempre con Stop Loss.
 - Cuentas reales: nunca operar sin confirmación explícita del usuario en ese mensaje.

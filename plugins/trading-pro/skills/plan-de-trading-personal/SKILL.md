@@ -39,6 +39,7 @@ Español, corto. Es la referencia que manda sobre cualquier impulso del momento.
 - Una estrategia nueva entra al plan solo tras backtest + 30-50 operaciones en demo.
 
 ## Historial de cambios
+- 2026-11-23 (estudio 3): ruptura asiática se mantiene sin filtros; RSI(2) en GBPUSD y petróleo descartados; medir el swap real de cada posición (cripto es caro).
 - 2026-11-23 (madrugada): riesgo a 1% por operación y 3% abierto (delegación del usuario); se añade IBS en USTECH y US500; Donchian H4 estudiado y no añadido.
 - 2026-11-23: megalab de 28,640 combinaciones con validación fuera de muestra → Donchian: fuera USDJPY y plata, entra oro.
 - 2026-11-23: nueva demo 10076749 de $100k (ensayo de fondeo), riesgo 0.5%; se añaden USTECH y US30 (RSI2) y XAGUSD y BTCUSD (Donchian), que no cabían en $5k.

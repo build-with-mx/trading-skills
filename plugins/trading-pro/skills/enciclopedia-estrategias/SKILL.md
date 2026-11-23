@@ -11,8 +11,9 @@ Español, corto. Cada fila combina **(1) qué dice la evidencia publicada** y **
 | Estrategia | Evidencia publicada | Nuestro test | Veredicto |
 |---|---|---|---|
 | **Tendencia (Donchian, Supertrend, MACD; D1 y H4)** | Fuerte: base de los fondos CTA; funciona por horizonte medio/largo | Oro Donchian 100%, MACD 80%, squeeze 100%; ETH/BTC Donchian ~90%, Supertrend 80%+ ; **USDJPY 0%**, GBP/EUR/AUD/índices de acciones malos | ✅ en oro y cripto · ❌ en divisas e índices de acciones |
+| RSI(2) en GBPUSD / petróleo | — | Validación fuera de muestra: GBPUSD 34%, USOIL 22% (= azar) | ❌ (con 5 años completos parecían buenas) |
 | **Reversión RSI(2) / IBS en índices** | Media-fuerte: IBS estudiado (Pagonidis 2013); en vivo rinde ~la mitad que en backtest | RSI US500 91%, USTECH 85%; **IBS USTECH 100%**, US500 67% (IBS añadido a la demo el 23-nov; 75-80% de sus entradas no coinciden con RSI2) | ✅ en índices de EE.UU. · ❌ en oro, divisas |
-| **Ruptura rango asiático** | Mixta (blogs con resultados inestables) | Oro 64% (config. activa: IS +0.24R, OOS +0.22R); GER40 14%, GBP/EUR/JPY < 10% | ✅ solo oro |
+| **Ruptura rango asiático** | Mixta (blogs con resultados inestables) | Oro 64% (config. activa: IS +0.24R, OOS +0.22R); GER40 14%, GBP/EUR/JPY < 10%. Filtros de tendencia (SMA50/200) o de volatilidad: no mejoran en ambos periodos | ✅ solo oro, sin filtros |
 | **Ruptura de Londres** (muy vendida) | Débil: tests de 10-18 años sin ventaja estable | Oro 28%, GER40 38%, GBP 2%, EUR 2%, JPY 3% | ❌ |
 | **Ruptura apertura Nueva York / ORB** | Débil-mixta | Oro 10%, USTECH 27%, EUR 11% | ❌ (Nasdaq en observación) |
 | **ICT / SMC** (Silver Bullet, FVG, killzones, order blocks) | Muy débil: sin estudios independientes; un test FVG+killzone en GBPUSD 2016-2026 perdió −30% | Falsa ruptura asiática (barrida de liquidez) ❌ | ❌ como sistema; útil solo como lenguaje |
@@ -24,7 +25,7 @@ Español, corto. Cada fila combina **(1) qué dice la evidencia publicada** y **
 | **Grid / martingala** (muchos EAs de oro) | Riesgo de ruina; la mayoría de prop firms los prohíbe o vigila | No se prueba: viola las reglas de riesgo | ❌ prohibido |
 | **IA / machine learning "milagro"** | Backtests sin validar; un portafolio en vivo de pocos meses no prueba nada | — | ❌ salvo validación fuera de muestra |
 | **Deriva nocturna (overnight drift)** | NY Fed: existió 1998-2020; se debilitó; difícil de capturar neto de costos | No testeable con D1 de Axi (el día cierra 17:00 NY) | ❌ |
-| **Carry trade** | Documentado en divisas, sin datos 2026 | Requiere datos de swap | 🔎 pendiente |
+| **Carry trade** | Documentado; índice de carry de Bloomberg +18% en 2025, pero "gana despacio y pierde de golpe" (desarme del yen ago-2024; Banque de France: medir por unidad de volatilidad) | No testeable sin historial de swaps de Axi | 🔎 no prioritario: riesgo de crash, swaps de CFD retail reducen el diferencial |
 
 ## Lecciones generales
 1. La ventaja depende del **mercado**: tendencia en oro/cripto, reversión en índices de acciones. La misma estrategia falla en otro mercado.
@@ -33,6 +34,7 @@ Español, corto. Cada fila combina **(1) qué dice la evidencia publicada** y **
 4. Desconfiar de backtests de vendedores, de periodos cortos (2020-2025 = oro solo subió) y de cualquier promesa de ganancia.
 
 ## Fuentes principales
+- Carry y swaps: Banque de France (carry y volatilidad), Advisor Perspectives/Bloomberg (carry 2025), Oanda e IG (financiamiento CFD), Axi (fees).
 - IBS: Pagonidis (2013) "The IBS Effect"; Quantified Strategies; J. Kinlay (2019).
 - Deriva nocturna: Boyarchenko, Larsen y Whelan, NY Fed Staff Report 917; Liberty Street Economics.
 - ICT/FVG: Backtrex (FVG + killzone GBPUSD 2016-2026).

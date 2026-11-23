@@ -87,6 +87,17 @@ El Estacional marcó al S&P 500: +0.18% de media los lunes (t = 3.2). Prueba: co
 | Oro / ETH | sin efecto | | | |
 **Veredicto: real pero delgado.** El swap triple del fin de semana (~0.02R en US500) lo deja en ~+0.035R por operación. No se opera solo; queda **en observación** (posible filtro: preferir entradas largas de RSI2/IBS en viernes).
 
+## Exploración de 34 mercados (23-nov-2026)
+Datos: 34 mercados D1 de Axi (5 años): índices EE.UU./Europa/Asia, metales, energía, 13 divisas y 6 criptos.
+- **Explorador**: 52,392 variantes → 23 zonas aprobadas (el azar logra 20%).
+- **Abogado del diablo** (costos ×2, sin top 5, vecinos, 4 periodos, bootstrap):
+  - **RESISTEN y diversifican (activas en Aurum 2.2)**: NR7 UK100 (+0.48R, 45 ops), NR7 GBPUSD (+0.29R), MACD GER40 (+0.17R), MACD SOL-USD (+0.46R), cambio de mes en oro (+0.24R).
+  - **RESISTEN pero repiten la ventaja de Donchian en el mismo mercado** (no se agregan): ndayrr/macd/nr7/squeeze en oro, squeeze en ETH, supertrend en SOL.
+  - **DUDOSAS**: boll EU50, squeeze SOL, macd XAGUSD, supertrend ETH. **FRÁGIL**: supertrend BTC.
+- **Pares (familia nueva, reversión del ratio, 31 pares × 144 variantes)**: 7 aprobados, 6 RESISTEN (USDCAD/USDCHF +0.37R, LTC/BTC +0.36R, US2000/US500 +0.31R, AUD/EUR +0.25R, XAG/XPT +0.32R, AUDJPY/USDJPY +0.89R); AUDJPY/EURJPY FRÁGIL. **Ojo**: la versión en vivo no reproduce el backtest en el simulador de 2026 → apagados hasta re-verificar.
+- **Lección de portafolio**: con muchas estrategias diarias, el tope de riesgo abierto dejaba fuera a la ruptura asiática (la mejor). Una **reserva de 1%** para ella llevó el año simulado de +3% (caída 16%) a +37% (caída 9%).
+- **Lección de autocontrol**: "−8R en 20 operaciones" se dispara por azar en una estrategia de 37% de acierto con 2R. Usar z frente al backtest.
+
 ## Ideas en cola
 Ruptura de Londres en oro (08:00 UTC) · RSI(2) en GBPUSD y USOIL a demo cuando haya margen de riesgo · Donchian en plata/BTC si la cuenta crece · Donchian en cartera (oro + índices) · filtro de volatilidad (ATR alto/bajo) sobre la ruptura asiática · días posteriores a gaps del lunes.
 

@@ -54,3 +54,14 @@ Con más riesgo la meta llega antes **solo si nada sale mal**; la probabilidad d
 - Riesgo máx. 1% por operación, 2% abierto total, stop diario 3%. Siempre con Stop Loss.
 - Cuentas reales: nunca operar sin confirmación explícita del usuario en ese mensaje.
 - Nunca inventar precios: consultarlos en vivo. Sin garantías; Claude no es asesor financiero.
+
+
+## ¿Cuánto arriesgar? Medido con el portafolio real (23-nov-2026)
+Bootstrap de las 272 operaciones de un año simulado (Aurum 2.2), suponiendo en vivo la MITAD de la ventaja:
+| Riesgo/op | Año típico | Año malo (peor 10%) | Prob. de caída > 40% |
+|---|---|---|---|
+| 1% | +21% | −8% | 0.3% |
+| 2% | +40% | −18% | 18% |
+| 3% | +55% | −31% | 55% |
+| 4% | +67% | −42% | 82% |
+Conclusión: **2% en la demo** (después de una semana al 1%); en retos de fondeo **1%** (su límite de −10% no tolera más). Por encima de 3%, ganar "un poco más" en el año típico cuesta más de 50% de probabilidad de una caída que cuesta años recuperar.

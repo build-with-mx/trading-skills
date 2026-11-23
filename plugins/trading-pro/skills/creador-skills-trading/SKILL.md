@@ -21,6 +21,7 @@ Meta-skill: fabrica otras skills de trading coherentes con el ecosistema del usu
 | psicologia-disciplina | Tilt, rutinas, reglas de parada |
 | revision-semanal-trading | Revisión semanal con estadísticas |
 | cuentas-fondeo-prop | Retos de fondeo (prop firms) |
+| estrategia-ruptura-asiatica-oro | Ruptura del rango asiático en oro H1 (estado: backtest) |
 
 Antes de crear, revisar `ls ~/.claude/skills ~/.claude/skills/synced/*/` por si ya existe algo parecido. Si existe, **proponer editar esa** en lugar de crear otra.
 

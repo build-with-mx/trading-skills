@@ -14,7 +14,6 @@ Español, corto. Estrategia de **pocas ganadoras grandes y muchas perdedoras peq
 4. **Salida**: compra → cuando un cierre queda por debajo del mínimo de las últimas 10 velas; venta → cierre por encima del máximo de 10 velas. Cerrar en la siguiente apertura. Sin TP.
 5. 1 posición por símbolo. No re-entrar el mismo día de una salida.
 6. **Lote** (riesgo 1%):
-   - **USDJPY**: valor por 1.0 de precio por lote = 100,000 / precio (USD). lote = balance×1% / (dist SL × 100,000/precio), redondeado abajo a 0.01 (mín. 0.01).
    - **ETHUSD / BTCUSD**: $1 por 1.0 por lote, mín. 0.1, paso 0.1. lote = balance×1% / dist SL, redondeado abajo a 0.1. Si 0.1 lote arriesga más del % permitido, no operar.
    - **XAUUSD**: $100 por 1.0 por lote, mín. 0.01. La posición Donchian de oro **no lleva TP** (así se distingue de la ruptura asiática, que sí lo lleva).
 
@@ -22,8 +21,8 @@ Español, corto. Estrategia de **pocas ganadoras grandes y muchas perdedoras peq
 | Mercado | Total Donchian 20 (ambos lados) | Robustez (N=20/30/40/55) | Años positivos | Riesgo con lote mín. hoy |
 |---|---|---|---|---|
 | **ETHUSD** | +10.5R (solo compras +12.7R) | 4/4 | **5/5** (ETH cayó −60% en el periodo: gana en ambos sentidos) | $22 |
-| **USDJPY** | +9.7R (solo compras +10.8R) | 4/4 | 3/5 | $11 |
-| XAGUSD | +4.6R | 4/4 | 3/5 | $280 (cabe en $100k) |
+| USDJPY ❌ retirado | +9.7R en 5 años, pero OOS −0.37R | 4/4 | 3/5 | — |
+| XAGUSD ❌ retirada | +4.6R, inconsistente IS/OOS | 4/4 | 3/5 | — |
 | BTCUSD | +9.4R | 4/4 | 3/5 | $718 (> 0.5% de $100k: se salta hasta que baje la volatilidad) |
 | Oro (solo compras) | +16.7R | — | 5/5 | ver `laboratorio-estrategias` |
 | EURUSD, GBPUSD, AUDUSD, US30, US2000, GER40 | negativa | 0/4 | — | ❌ No usar |

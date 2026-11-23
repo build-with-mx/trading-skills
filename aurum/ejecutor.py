@@ -67,7 +67,9 @@ class Ejecutor:
     def puede_entrar(self, mt5, clave, simbolo):
         t = mt5.symbol_info_tick(simbolo)
         ahora = datetime.now(timezone.utc)
-        primera = self.esperando.setdefault(clave, ahora)
+        primera = self.esperando.get(clave)
+        if primera is None or ahora - primera > 2 * ESPERA_MAX:  # una espera vieja no cuenta para una señal nueva
+            primera = self.esperando[clave] = ahora
         accion, texto = decidir(t.ask - t.bid, self.spreads.get(simbolo, []), primera, ahora)
         if accion == "entrar":
             self.esperando.pop(clave, None)

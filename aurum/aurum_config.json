@@ -1,5 +1,5 @@
 {
-  "version": "2.2.0",
+  "version": "2.3.0",
   "actualizado": "2026-11-23",
   "cuenta_permitida": 10076749,
   "solo_observar": false,
@@ -77,106 +77,6 @@
       "sl_atr": 2.5,
       "exp_backtest": 0.15
     },
-    "ibs": {
-      "activa": true,
-      "magic": 1004,
-      "simbolos": [
-        "USTECH",
-        "US500"
-      ],
-      "entrada": 0.2,
-      "salida": 0.7,
-      "sma_tendencia": 200,
-      "max_sesiones": 5,
-      "atr_periodo": 20,
-      "sl_atr": 2.0,
-      "exp_backtest": 0.12
-    },
-    "par_ratio": {
-      "activa": false,
-      "_nota": "Reversión del ratio entre dos mercados parecidos (D1). Validado 23-nov-2026 en 31 pares × 144 variantes con datos de Axi: aprobados por el filtro anti-suerte y el Abogado del diablo (RESISTE). Demo con riesgo reducido (×0.5) hasta 20 operaciones en vivo por par.",
-      "magic": 1005,
-      "simbolos": [
-        "AUDJPY",
-        "AUDUSD",
-        "BTCUSD",
-        "EURUSD",
-        "LTCUSD",
-        "US2000",
-        "US500",
-        "USDCAD",
-        "USDCHF",
-        "USDJPY",
-        "XAGUSD",
-        "XPTUSD"
-      ],
-      "pares": [
-        {
-          "a": "USDCAD",
-          "b": "USDCHF",
-          "L": 20,
-          "E": 2.0,
-          "X": 0.0,
-          "S": 3.0,
-          "H": 20,
-          "_val": "89 ops, +0.37R, 74% variantes OK (azar 30%)"
-        },
-        {
-          "a": "LTCUSD",
-          "b": "BTCUSD",
-          "L": 40,
-          "E": 2.0,
-          "X": 0.5,
-          "S": 3.0,
-          "H": 10,
-          "_val": "87 ops, +0.36R, 91% (azar 25%)"
-        },
-        {
-          "a": "US2000",
-          "b": "US500",
-          "L": 40,
-          "E": 2.0,
-          "X": 0.5,
-          "S": 3.5,
-          "H": 20,
-          "_val": "52 ops, +0.31R, 84% (azar 27%)"
-        },
-        {
-          "a": "AUDUSD",
-          "b": "EURUSD",
-          "L": 40,
-          "E": 2.0,
-          "X": 0.5,
-          "S": 3.5,
-          "H": 20,
-          "_val": "51 ops, +0.25R, 77% (azar 30%)"
-        },
-        {
-          "a": "XAGUSD",
-          "b": "XPTUSD",
-          "L": 40,
-          "E": 2.0,
-          "X": 0.5,
-          "S": 4.0,
-          "H": 20,
-          "_val": "46 ops, +0.32R, 93% (azar 33%)"
-        },
-        {
-          "a": "AUDJPY",
-          "b": "USDJPY",
-          "L": 40,
-          "E": 2.5,
-          "X": 0.5,
-          "S": 3.0,
-          "H": 10,
-          "_val": "45 ops, +0.89R, 79% (azar 38%)"
-        }
-      ],
-      "sl_pata_atr": 6.0,
-      "factor_riesgo": 0.5,
-      "exp_backtest": 0.3,
-      "_estado": "APAGADA. Backtest de 5 años: 6 pares RESISTEN. Pero en la simulación en vivo de 2026 la implementación no reproduce el backtest (se reabrían pares tras cierres del Guardián con el ratio ya pasado de su stop; corregido en 2.2, falta re-verificar). No encender hasta que Claude lo confirme en el simulador."
-    },
     "lab_nr7_UK100": {
       "activa": true,
       "familia_lab": "nr7",
@@ -192,22 +92,6 @@
       "magic": 1101,
       "exp_backtest": 0.48,
       "_validacion": "45 ops, IS +0.24R / OOS +0.95R, 81% de variantes OK, Abogado RESISTE (2%) — 23-nov-2026"
-    },
-    "lab_nr7_GBPUSD": {
-      "activa": true,
-      "familia_lab": "nr7",
-      "simbolos": [
-        "GBPUSD"
-      ],
-      "params": [
-        "nr7",
-        1,
-        3,
-        "L"
-      ],
-      "magic": 1102,
-      "exp_backtest": 0.29,
-      "_validacion": "47 ops, IS +0.37R / OOS +0.14R, 61% OK, RESISTE (8%) — 23-nov-2026"
     },
     "lab_macd_GER40": {
       "activa": true,
@@ -266,8 +150,6 @@
     "donchian:XAUUSD",
     "rsi2:USTECH",
     "donchian:ETHUSD",
-    "ibs:USTECH",
-    "ibs:US500",
     "rsi2:US30",
     "rsi2:US2000",
     "donchian:BTCUSD"
@@ -350,5 +232,11 @@
     "riesgo_abierto_max": 0.03,
     "perdida_diaria_max": 0.03,
     "_nota": "Para pasar a 2% (recomendado tras 1 semana sin problemas): riesgo_por_operacion 0.02, riesgo_abierto_max 0.06, perdida_diaria_max 0.06 AQUÍ y arriba, y reservas_riesgo.ruptura_asiatica 0.02. Si cambias el riesgo sin cambiar estos topes, el Auditor te avisará."
+  },
+  "eliminadas": {
+    "_nota": "23-nov-2026, a pedido del usuario: perdieron en las simulaciones del año 2026 (aunque resistían en 5 años de backtest). El Explorador y el Abogado las pueden volver a proponer si su evidencia mejora.",
+    "par_ratio": "6 pares: perdieron en todas las simulaciones (−$4.5k a −$22k)",
+    "lab_nr7_GBPUSD": "perdió en todas (−$4k a −$7.8k)",
+    "ibs": "perdió en 5 de 6 (−$1k a −$4.6k)"
   }
 }

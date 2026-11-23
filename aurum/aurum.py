@@ -33,7 +33,7 @@ RUTA_CONFIG = os.path.join(CARPETA, "aurum_config.json")
 RUTA_ESTADO = os.path.join(CARPETA, "aurum_estado.json")
 RUTA_OPS = os.path.join(CARPETA, "aurum_operaciones.csv")
 RUTA_LOG = os.path.join(CARPETA, "aurum_eventos.log")
-VERSION = "2.2.0"
+VERSION = "2.3.0"
 RUTA_ALTO = os.path.join(CARPETA, "aurum_ALTO.flag")
 RUTA_PAUSA = os.path.join(CARPETA, "aurum_PAUSA.flag")  # pausa manual (Centralita /pausa)
 RUTA_VIGIA = os.path.join(CARPETA, "vigia_estado.json")
@@ -732,6 +732,8 @@ class Aurum:
 
         # --- estrategias diarias: salidas y señales en cada vela D1 nueva ---
         for nombre in ("donchian", "rsi2", "ibs"):
+            if nombre not in cfg["estrategias"]:
+                continue  # estrategia eliminada de la configuración
             e = cfg["estrategias"][nombre]
             for s in e["simbolos"]:
                 if not self.mercado_abierto(s):

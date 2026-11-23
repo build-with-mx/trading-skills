@@ -30,8 +30,7 @@ RUTA_ESTADO = os.path.join(CARPETA, "abogado_estado.json")
 # estrategias activas expresadas en el lenguaje del laboratorio
 ACTIVAS = [("ruptura_asiatica", "XAUUSD", "H1", "sesion", (0, 6, 10, 1.5, 2))] + \
           [("donchian", s, "D1", "donchian", (20, 10, 2, "A")) for s in ("XAUUSD", "ETHUSD", "BTCUSD")] + \
-          [("rsi2", s, "D1", "rsi", (2, 10, 200, "sma5", 2.5, "A")) for s in ("US500", "USTECH", "US30", "US2000")] + \
-          [("ibs", s, "D1", "ibs", (0.2, 0.7, 200, 2, "A")) for s in ("USTECH", "US500")]
+          [("rsi2", s, "D1", "rsi", (2, 10, 200, "sma5", 2.5, "A")) for s in ("US500", "USTECH", "US30", "US2000")]
 
 
 TENDENCIA = {"donchian", "macross", "ndayrr", "macd", "supertrend", "squeeze", "mom", "nr7"}

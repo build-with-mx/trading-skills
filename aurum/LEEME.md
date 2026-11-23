@@ -1,4 +1,4 @@
-# Aurum 2.2 — equipo de bots de trading
+# Aurum 2.3 — equipo de bots de trading
 
 Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el filtro anti-suerte **y** el Abogado del diablo:
 
@@ -7,13 +7,13 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 | Ruptura asiática | Oro (XAUUSD) | Cada vela de 1 hora | 195 ops, +0.23R, RESISTE |
 | Donchian (tendencia) | Oro, Ethereum, Bitcoin | Cada vela diaria | +0.24 a +0.31R, DUDOSA (pocas operaciones) |
 | RSI(2) (reversión) | S&P 500, Nasdaq, Dow, Russell 2000 | Cada vela diaria | +0.09 a +0.19R, RESISTE |
-| IBS (reversión) | Nasdaq, S&P 500 | Cada vela diaria | +0.12R, RESISTE |
-| **NR7** (nuevo) | **FTSE 100**, **GBP/USD** | Cada vela diaria | +0.48R / +0.29R, RESISTE |
+| **NR7** (nuevo) | **FTSE 100** | Cada vela diaria | +0.48R, RESISTE |
 | **MACD** (nuevo) | **DAX**, **Solana** | Cada vela diaria | +0.17R / +0.46R, RESISTE |
 | **Cambio de mes** (nuevo) | Oro | Cada vela diaria | +0.24R, RESISTE |
-| Pares (reversión del ratio) | 6 pares | Cada vela diaria | **Apagada** hasta verificar su corrección |
 
 Las estrategias nuevas usan **el mismo motor del laboratorio** con el que se validaron (se comprobó que dan las mismas entradas que el backtest).
+
+**Eliminadas en 2.3 (perdieron en las simulaciones de 2026):** IBS, NR7 en GBP/USD y los 6 pares. Sin ellas, el año simulado pasó de +37% a **+41%** y la caída máxima de 9.0% a **8.2%**. Todas las que quedan ganaron.
 
 **Cambios de reglas en 2.2 (medidos con un año simulado):**
 - **Reserva de 1% para la ruptura asiática:** las demás estrategias ya no llenan el riesgo abierto y la dejan fuera. Resultado: +$42k en vez de +$3k, y caída de 8% en vez de 16%.

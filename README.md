@@ -16,7 +16,7 @@ Plugin con 9 skills de trading (oro y Nasdaq, MT5 vía Axi).
 
 ## Instalar en Claude Code
 ```
-/plugin marketplace add <usuario>/<repo>
+/plugin marketplace add build-with-mx/trading-skills
 /plugin install trading-pro@trading-skills
 ```
 

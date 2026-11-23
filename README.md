@@ -1,6 +1,6 @@
 # Trading Skills
 
-Plugin con 10 skills de trading (oro y Nasdaq, MT5 vía Axi).
+Plugin con 11 skills de trading (oro y Nasdaq, MT5 vía Axi).
 
 | Skill | Para qué |
 |---|---|
@@ -14,6 +14,7 @@ Plugin con 10 skills de trading (oro y Nasdaq, MT5 vía Axi).
 | revision-semanal-trading | Estadísticas y 3 acciones por semana |
 | cuentas-fondeo-prop | Retos de fondeo y cómo pasarlos |
 | estrategia-ruptura-asiatica-oro | Ruptura del rango asiático en oro H1 (backtest +32.9R) |
+| scalping-micro-oro | Scalping M1: test real y por qué se descartó |
 
 ## Instalar en Claude Code
 ```

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "actualizado": "2026-11-23",
   "cuenta_permitida": 10076749,
   "solo_observar": false,
@@ -9,8 +9,12 @@
   "filtro_noticias": {
     "activo": true,
     "url": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
-    "monedas": ["USD"],
-    "impacto": ["High"],
+    "monedas": [
+      "USD"
+    ],
+    "impacto": [
+      "High"
+    ],
     "minutos_antes": 30,
     "minutos_despues": 30
   },
@@ -24,24 +28,77 @@
   },
   "estrategias": {
     "ruptura_asiatica": {
-      "activa": true, "magic": 1001, "simbolos": ["XAUUSD"],
-      "rango_inicio_utc": 0, "rango_fin_utc": 6, "ventana_fin_utc": 16,
-      "atr_periodo": 14, "sl_atr": 1.5, "tp_r": 2.0, "spread_max": 0.6
+      "activa": true,
+      "magic": 1001,
+      "simbolos": [
+        "XAUUSD"
+      ],
+      "rango_inicio_utc": 0,
+      "rango_fin_utc": 6,
+      "ventana_fin_utc": 16,
+      "atr_periodo": 14,
+      "sl_atr": 1.5,
+      "tp_r": 2.0,
+      "spread_max": 0.6
     },
     "donchian": {
-      "activa": true, "magic": 1002, "simbolos": ["XAUUSD", "ETHUSD", "BTCUSD"],
-      "entrada": 20, "salida": 10, "atr_periodo": 20, "sl_atr": 2.0
+      "activa": true,
+      "magic": 1002,
+      "simbolos": [
+        "XAUUSD",
+        "ETHUSD",
+        "BTCUSD"
+      ],
+      "entrada": 20,
+      "salida": 10,
+      "atr_periodo": 20,
+      "sl_atr": 2.0
     },
     "rsi2": {
-      "activa": true, "magic": 1003, "simbolos": ["US500", "USTECH", "US30", "US2000"],
-      "rsi_periodo": 2, "umbral": 10, "sma_tendencia": 200, "sma_salida": 5,
-      "max_sesiones": 10, "atr_periodo": 20, "sl_atr": 2.5
+      "activa": true,
+      "magic": 1003,
+      "simbolos": [
+        "US500",
+        "USTECH",
+        "US30",
+        "US2000"
+      ],
+      "rsi_periodo": 2,
+      "umbral": 10,
+      "sma_tendencia": 200,
+      "sma_salida": 5,
+      "max_sesiones": 10,
+      "atr_periodo": 20,
+      "sl_atr": 2.5
     },
     "ibs": {
-      "activa": true, "magic": 1004, "simbolos": ["USTECH", "US500"],
-      "entrada": 0.2, "salida": 0.7, "sma_tendencia": 200, "max_sesiones": 5,
-      "atr_periodo": 20, "sl_atr": 2.0
+      "activa": true,
+      "magic": 1004,
+      "simbolos": [
+        "USTECH",
+        "US500"
+      ],
+      "entrada": 0.2,
+      "salida": 0.7,
+      "sma_tendencia": 200,
+      "max_sesiones": 5,
+      "atr_periodo": 20,
+      "sl_atr": 2.0
     }
   },
-  "prioridad": ["rsi2:US500", "donchian:XAUUSD", "rsi2:USTECH", "donchian:ETHUSD", "ibs:USTECH", "ibs:US500", "rsi2:US30", "rsi2:US2000", "donchian:BTCUSD"]
+  "prioridad": [
+    "rsi2:US500",
+    "donchian:XAUUSD",
+    "rsi2:USTECH",
+    "donchian:ETHUSD",
+    "ibs:USTECH",
+    "ibs:US500",
+    "rsi2:US30",
+    "rsi2:US2000",
+    "donchian:BTCUSD"
+  ],
+  "guardian": {
+    "caida_maxima": 0.1,
+    "intervalo_seg": 10
+  }
 }

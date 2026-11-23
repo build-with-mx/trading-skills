@@ -20,13 +20,19 @@ try:
     import MetaTrader5 as mt5
 except ImportError:  # permite probar la lógica de señales sin MetaTrader
     mt5 = None
+try:
+    from mensajero import enviar
+except Exception:  # sin mensajero: solo pantalla
+    def enviar(texto, origen="Aurum"):
+        print(f"[{origen}] {texto}")
 
 CARPETA = os.path.dirname(os.path.abspath(__file__))
 RUTA_CONFIG = os.path.join(CARPETA, "aurum_config.json")
 RUTA_ESTADO = os.path.join(CARPETA, "aurum_estado.json")
 RUTA_OPS = os.path.join(CARPETA, "aurum_operaciones.csv")
 RUTA_LOG = os.path.join(CARPETA, "aurum_eventos.log")
-VERSION = "1.0.0"
+VERSION = "1.1.0"
+RUTA_ALTO = os.path.join(CARPETA, "aurum_ALTO.flag")
 
 
 # ============================ utilidades ============================
@@ -43,7 +49,7 @@ def log(msg, **datos):
 
 def registrar_operacion(**d):
     nuevo = not os.path.exists(RUTA_OPS)
-    campos = ["hora_utc", "accion", "estrategia", "simbolo", "direccion", "lote", "precio", "sl", "tp", "riesgo_usd", "resultado_usd", "motivo"]
+    campos = ["hora_utc", "accion", "estrategia", "simbolo", "direccion", "lote", "precio_pedido", "precio", "sl", "tp", "riesgo_usd", "resultado_usd", "motivo"]
     with open(RUTA_OPS, "a", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=campos)
         if nuevo:
@@ -221,6 +227,7 @@ class Aurum:
                 mt5.symbol_select(s, True)
         self.calcular_offset()
         log(f"Aurum {VERSION} iniciado", cuenta=c.login, balance=c.balance, offset_servidor_h=self.offset_h)
+        enviar(f"🚀 Aurum {VERSION} iniciado en la cuenta {c.login}. Balance ${c.balance:,.2f}.")
 
     def calcular_offset(self):
         """Las velas de MT5 vienen en hora del servidor; calculo su diferencia con UTC."""
@@ -384,13 +391,15 @@ class Aurum:
         r = mt5.order_send(req)
         if r is None or r.retcode != mt5.TRADE_RETCODE_DONE:
             log("Error al abrir", estrategia=estrategia, simbolo=simbolo, retcode=getattr(r, "retcode", None), error=mt5.last_error())
+            enviar(f"❗ No pude abrir {estrategia} en {simbolo} (código {getattr(r, 'retcode', None)})")
             return
         riesgo_real = abs(r.price - sl) * self.valor_por_precio(simbolo) * lote
         self.estado["riesgos"][str(r.order)] = riesgo_real
         guardar_json(RUTA_ESTADO, self.estado)
         registrar_operacion(accion="ABRIR", estrategia=estrategia, simbolo=simbolo, direccion="COMPRA" if direccion == 1 else "VENTA",
-                            lote=lote, precio=r.price, sl=sl, tp=tp, riesgo_usd=round(riesgo_real, 2), motivo=motivo)
+                            lote=lote, precio_pedido=precio, precio=r.price, sl=sl, tp=tp, riesgo_usd=round(riesgo_real, 2), motivo=motivo)
         log("ABIERTA", estrategia=estrategia, simbolo=simbolo, dir=direccion, lote=lote, precio=r.price, sl=sl, tp=tp)
+        enviar(f"🟢 ABIERTA {estrategia}: {'COMPRA' if direccion == 1 else 'VENTA'} {simbolo} {lote} lotes @ {r.price}\nSL {sl} · TP {tp or '—'} · riesgo ${riesgo_real:,.0f}")
 
     def cerrar(self, p, estrategia, motivo):
         if self.cfg.get("solo_observar"):
@@ -409,6 +418,7 @@ class Aurum:
         registrar_operacion(accion="CERRAR", estrategia=estrategia, simbolo=p.symbol, direccion="COMPRA" if es_compra else "VENTA",
                             lote=p.volume, precio=r.price, resultado_usd=round(p.profit + p.swap, 2), motivo=motivo)
         log("CERRADA", ticket=p.ticket, estrategia=estrategia, resultado=round(p.profit + p.swap, 2), motivo=motivo)
+        enviar(f"{'✅' if p.profit + p.swap > 0 else '🔻'} CERRADA {estrategia}: {p.symbol} {p.volume} lotes · resultado {p.profit + p.swap:+,.2f}$ · {motivo}")
 
     # ---------- autocontrol ----------
     def revisar_autocontrol(self):
@@ -425,6 +435,7 @@ class Aurum:
                 self.estado["pausadas"].append(nombre)
                 guardar_json(RUTA_ESTADO, self.estado)
                 log("AUTOCONTROL: estrategia pausada por mal rendimiento en vivo", estrategia=nombre, suma_R=round(suma_r, 1))
+                enviar(f"⏸️ Pausé la estrategia {nombre}: sus últimas {n} operaciones suman {suma_r:+.1f}R. Revísala con Claude.")
 
     def activa(self, nombre):
         return self.cfg["estrategias"][nombre].get("activa") and nombre not in self.estado["pausadas"]
@@ -447,6 +458,7 @@ class Aurum:
         bal = mt5.account_info().balance
         if self.resultado_hoy() <= -bal * cfg["perdida_diaria_max"]:
             return  # stop diario: no se abre nada más hoy
+        bloqueado = os.path.exists(RUTA_ALTO)  # el Guardián frenó: solo se gestionan salidas
         candidatos = []
         noticia = self.bloqueo_noticias()
 
@@ -493,6 +505,11 @@ class Aurum:
                 else:
                     candidatos.append((f"ruptura_asiatica:{s}", "ruptura_asiatica", s, sen[0], sen[1], sen[2], f"ruptura {sen[3]}"))
 
+        if bloqueado:
+            if candidatos:
+                log("Guardián activo (aurum_ALTO.flag): no abro nuevas", señales=len(candidatos))
+            guardar_json(RUTA_ESTADO, self.estado)
+            return
         # --- abrir por prioridad ---
         orden = cfg.get("prioridad", [])
         candidatos.sort(key=lambda c: orden.index(c[0]) if c[0] in orden else -1)

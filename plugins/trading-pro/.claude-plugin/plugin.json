@@ -1,5 +1,5 @@
 {
   "name": "trading-pro",
-  "version": "1.14.0",
+  "version": "1.14.1",
   "description": "Skills de trading para oro y Nasdaq en MT5 (Axi): riesgo, backtesting, bots en Python, checklist de entrada, noticias macro, psicologia, revision semanal, cuentas de fondeo y un creador de nuevas skills."
 }

@@ -76,6 +76,17 @@ Simulación de 4 meses con velas reales (23 jul – 20 nov 2026): la demo maestr
 - Supervisor de fondeo: bloquea entradas al 50% de cualquier límite y **cierra todo al 80%**, antes de que la empresa descalifique.
 - Es un solo periodo de 4 meses: el resultado puede ser mejor o peor. Pasar el checklist del prompt maestro antes de comprar.
 
+### Año completo (dic 2025 – nov 2026): ¿cuántas veces pasa el reto?
+Las 191 operaciones de la simulación anual se aplicaron a un reto de $5k (+8% objetivo, −10% total, −5% diario), empezando en 44 fechas distintas (una por semana):
+| Riesgo | Pasa | Falla | Días medianos |
+|---|---|---|---|
+| 0.5% | 26 | 0 | 138 |
+| **1% con Supervisor y Estratega** | **37** | **0** | **56** |
+| 1.5% con protecciones | 38 | 3 | 28 |
+(El resto no terminó porque se acabaron los datos.) **Usar 1%.** 1.5% empieza a fallar sin acelerar lo suficiente.
+- La cuenta maestra al 1% llegó a caer **9.7%** (feb–abr 2026, racha mala de la ruptura asiática en oro): por eso el Supervisor que bloquea y el Estratega que baja el riesgo no son opcionales.
+- Limitaciones: es un solo año, con ventanas que se solapan; depende mucho del oro; no incluye el ~10% de señales donde el lote mínimo no cabe; no cuenta comisiones del reto.
+
 ## Reglas de seguridad (heredadas)
 - Riesgo máx. 1% por operación, 2% abierto total, stop diario 3%. Siempre con Stop Loss.
 - Cuentas reales: nunca operar sin confirmación explícita del usuario en ese mensaje.

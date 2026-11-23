@@ -3,7 +3,7 @@ name: estrategia-tendencia-donchian
 description: "Estrategia de seguimiento de tendencia Donchian 20 en diario (activa en la demo de $100k en USDJPY, plata XAGUSD, Ethereum ETHUSD y Bitcoin BTCUSD): entrar cuando el precio cierra en máximo/mínimo de 20 días, salir con el canal de 10 días. Reglas exactas, backtest de 5 años en 13 mercados, lote y revisión diaria. Usar cuando el usuario diga 'Donchian', 'seguimiento de tendencia', 'tortugas', 'estrategia de tendencia', 'yen', 'ethereum', 'cripto', o pida operar/revisar esta estrategia."
 ---
 
-# Tendencia Donchian 20 — USDJPY y ETHUSD (D1)
+# Tendencia Donchian 20 — USDJPY, XAGUSD, ETHUSD, BTCUSD (D1)
 
 Español, corto. Estrategia de **pocas ganadoras grandes y muchas perdedoras pequeñas**: acierto típico 35-45%. Rachas de pérdidas son normales; la ganancia viene de pocas tendencias largas.
 
@@ -15,7 +15,8 @@ Español, corto. Estrategia de **pocas ganadoras grandes y muchas perdedoras peq
 5. 1 posición por símbolo. No re-entrar el mismo día de una salida.
 6. **Lote** (riesgo 1%):
    - **USDJPY**: valor por 1.0 de precio por lote = 100,000 / precio (USD). lote = balance×1% / (dist SL × 100,000/precio), redondeado abajo a 0.01 (mín. 0.01).
-   - **ETHUSD**: $1 por 1.0 por lote, mín. 0.1, paso 0.1. lote = balance×1% / dist SL, redondeado abajo a 0.1. Si 0.1 lote arriesga > 1%, no operar.
+   - **ETHUSD / BTCUSD**: $1 por 1.0 por lote, mín. 0.1, paso 0.1. lote = balance×1% / dist SL, redondeado abajo a 0.1. Si 0.1 lote arriesga más del % permitido, no operar.
+   - **XAGUSD**: $5,000 por 1.0 por lote (contrato 5,000 oz), mín. 0.01.
 
 ## Validación (D1 Axi, nov-2021 → nov-2026, costo = 2× spread mediano)
 | Mercado | Total Donchian 20 (ambos lados) | Robustez (N=20/30/40/55) | Años positivos | Riesgo con lote mín. hoy |
@@ -34,7 +35,7 @@ Conclusión: la tendencia funciona en mercados con tendencias largas (yen, metal
 - Estado: **backtest ✔ → demo**. Pasar a real solo tras 30+ operaciones en demo (tarda meses: ~8-12 operaciones/año por mercado).
 
 ## Revisión diaria (la hace la tarea "Estrategias diarias")
-1. `get_mt5_candles` D1 ~60 días de USDJPY y ETHUSD.
+1. `get_mt5_candles` D1 ~60 días de USDJPY, XAGUSD, ETHUSD y BTCUSD.
 2. Con posición: ¿cierre al otro lado del canal de 10? → `close_mt5_position`. Si no, mantener sin tocar.
 3. Sin posición: ¿cierre fuera del canal de 20? → filtros (riesgo abierto total ≤ 2%, pérdida del día < 3%) → abrir con SL.
 

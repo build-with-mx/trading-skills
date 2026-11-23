@@ -5,14 +5,14 @@ description: "Revisión semanal (o mensual) del trading: descarga el historial d
 
 # Revisión semanal
 
-Lo que no se mide no mejora. Cuenta por defecto: demo MT5 10076734. Español, corto.
+Lo que no se mide no mejora. Cuenta por defecto: demo MT5 10076749 ($100k, riesgo 0.5% por operación). Español, corto.
 
 ## Pasos
 1. `get_account` (balance, equity) y `get_mt5_order_history` + `get_mt5_fills` del periodo.
-2. Guardar las operaciones cerradas en CSV (scratchpad) con columnas: `cierre,simbolo,direccion,lotes,profit` (profit neto con comisión y swap). Si el usuario dio su riesgo por operación, añadir columna `riesgo` en $; si no, usar 1% del balance inicial del periodo.
+2. Guardar las operaciones cerradas en CSV (scratchpad) con columnas: `cierre,simbolo,direccion,lotes,profit` (profit neto con comisión y swap). Si el usuario dio su riesgo por operación, añadir columna `riesgo` en $; si no, usar 0.5% del balance inicial del periodo.
 3. Correr `python3 scripts/estadisticas.py --csv ops.csv --balance-inicial <X>` (ruta relativa a esta skill).
 4. Revisar con el usuario cumplimiento del plan: ¿todas con SL? ¿respetó stop diario? ¿operaciones fuera del plan?
-5. Progreso hacia la meta (de $5,000 a $15,000): % recorrido y ritmo.
+5. Progreso frente al objetivo tipo reto de fondeo (+10% sin caer más de 10% desde el máximo) y resultados por estrategia.
 
 ## Formato de salida
 1. **Números**: balance, P/L $, % semana, operaciones, % acierto, expectativa (R), PF, máx. DD.

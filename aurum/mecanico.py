@@ -32,6 +32,7 @@ LATIDOS = {
     "Estratega de metas": ("metas_estado.json", 130),
     "Auditor": ("auditor_reporte.md", 130),
     "Panel": ("panel.html", 5),
+    "Archivista": ("archivista_estado.json", 3),
 }
 
 

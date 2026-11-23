@@ -20,6 +20,8 @@ try:
     import MetaTrader5 as mt5
 except ImportError:  # permite probar la lógica de señales sin MetaTrader
     mt5 = None
+from ejecutor import Ejecutor
+
 try:
     from mensajero import enviar
 except Exception:  # sin mensajero: solo pantalla
@@ -31,7 +33,7 @@ RUTA_CONFIG = os.path.join(CARPETA, "aurum_config.json")
 RUTA_ESTADO = os.path.join(CARPETA, "aurum_estado.json")
 RUTA_OPS = os.path.join(CARPETA, "aurum_operaciones.csv")
 RUTA_LOG = os.path.join(CARPETA, "aurum_eventos.log")
-VERSION = "1.5.0"
+VERSION = "1.6.0"
 RUTA_ALTO = os.path.join(CARPETA, "aurum_ALTO.flag")
 RUTA_VIGIA = os.path.join(CARPETA, "vigia_estado.json")
 RUTA_METAS = os.path.join(CARPETA, "metas_estado.json")
@@ -227,6 +229,7 @@ class Aurum:
         self.noticias = []
         self.noticias_hora = None
         self.config_hora = None
+        self.ejecutor = Ejecutor()
 
     # ---------- conexión y seguridad ----------
     def conectar(self):
@@ -380,6 +383,7 @@ class Aurum:
         return mt5.ORDER_FILLING_FOK if fm & 1 else mt5.ORDER_FILLING_IOC if fm & 2 else mt5.ORDER_FILLING_RETURN
 
     def abrir(self, estrategia, simbolo, direccion, dist_sl, dist_tp, motivo):
+        """Abre la operación. Devuelve "posponer" si el Ejecutor pide esperar (spread anormal)."""
         e = self.cfg["estrategias"][estrategia]
         bal = mt5.account_info().balance
         riesgo = bal * self.cfg["riesgo_por_operacion"]
@@ -397,6 +401,12 @@ class Aurum:
         if lote <= 0:
             log("El lote mínimo arriesga demasiado: no abro", estrategia=estrategia, simbolo=simbolo)
             return
+        entrar, nota = self.ejecutor.puede_entrar(mt5, f"{estrategia}:{simbolo}", simbolo)
+        if not entrar:
+            log("Ejecutor: entrada pospuesta", estrategia=estrategia, simbolo=simbolo, motivo=nota)
+            return "posponer"
+        if nota:
+            motivo += f" [{nota}]"
         tick = mt5.symbol_info_tick(simbolo)
         info = mt5.symbol_info(simbolo)
         precio = tick.ask if direccion == 1 else tick.bid
@@ -409,11 +419,14 @@ class Aurum:
                "type": mt5.ORDER_TYPE_BUY if direccion == 1 else mt5.ORDER_TYPE_SELL, "price": precio,
                "sl": sl, "tp": tp, "deviation": 30, "magic": e["magic"], "comment": f"aurum_{estrategia}"[:31],
                "type_time": mt5.ORDER_TIME_GTC, "type_filling": self.filling(simbolo)}
-        r = mt5.order_send(req)
+        r = Ejecutor.enviar(mt5, req, direccion)  # reintenta si el broker recotiza
         if r is None or r.retcode != mt5.TRADE_RETCODE_DONE:
             log("Error al abrir", estrategia=estrategia, simbolo=simbolo, retcode=getattr(r, "retcode", None), error=mt5.last_error())
             enviar(f"❗ No pude abrir {estrategia} en {simbolo} (código {getattr(r, 'retcode', None)})")
             return
+        p_real = mt5.positions_get(ticket=r.order)
+        if p_real:  # SL/TP reales (pudieron moverse si hubo recotización)
+            sl, tp = p_real[0].sl, p_real[0].tp
         riesgo_real = abs(r.price - sl) * self.valor_por_precio(simbolo) * lote
         publicar_senal(accion="ABRIR", id=r.order, estrategia=estrategia, simbolo=simbolo, direccion=direccion, precio=r.price,
                        sl_dist=abs(r.price - sl), tp_dist=abs(tp - r.price) if tp else 0.0, magic=e["magic"])
@@ -476,6 +489,7 @@ class Aurum:
 
     def ciclo(self):
         guardar_json(RUTA_VIVAS, {"t": ahora_utc().isoformat(), "ids": [p.ticket for p in mt5.positions_get() or []]})
+        self.ejecutor.muestrear(mt5, sorted({s for e in self.cfg["estrategias"].values() for s in e["simbolos"]}))
         self.actualizar_config()
         self.actualizar_noticias()
         self.calcular_offset()
@@ -543,7 +557,8 @@ class Aurum:
                 log("Entrada pospuesta por noticia", estrategia=nombre, simbolo=s, noticia=noticia)
                 self.estado["ultima_barra"].pop(f"{nombre}:{s}:D1", None)  # reintentar en el siguiente ciclo
                 continue
-            self.abrir(nombre, s, d, sl, tp, motivo)
+            if self.abrir(nombre, s, d, sl, tp, motivo) == "posponer":  # el Ejecutor espera un spread normal
+                self.estado["ultima_barra"].pop(f"ruptura:{s}:H1" if nombre == "ruptura_asiatica" else f"{nombre}:{s}:D1", None)
         guardar_json(RUTA_ESTADO, self.estado)
 
     def correr(self):

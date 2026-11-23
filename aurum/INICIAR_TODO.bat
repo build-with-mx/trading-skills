@@ -1,6 +1,6 @@
 @echo off
 cd /d "%~dp0"
-echo Iniciando el equipo Aurum (15 bots)...
+echo Iniciando el equipo Aurum (18 bots)...
 start "Guardian" cmd /k iniciar_guardian.bat
 timeout /t 5 /nobreak >nul
 start "Minero" cmd /k iniciar_minero.bat
@@ -17,6 +17,9 @@ start "Auditor" cmd /k iniciar_auditor.bat
 start "Archivista" cmd /k iniciar_archivista.bat
 start "Profesor" cmd /k iniciar_profesor.bat
 start "Abogado del diablo" cmd /k iniciar_abogado_diablo.bat
+start "Estacional" cmd /k iniciar_estacional.bat
+start "Analista COT" cmd /k iniciar_analista_cot.bat
+start "Calendario de resultados" cmd /k iniciar_calendario_resultados.bat
 timeout /t 5 /nobreak >nul
 start "Aurum" cmd /k iniciar_aurum.bat
-echo Listo: Guardian, Minero, Contador, Vigia, Sombra, Explorador, Estratega, Mecanico, Respaldo, Panel, Auditor, Archivista, Profesor, Abogado del diablo y Aurum en marcha. Abre panel.html para ver todo. Cuenta de fondeo: iniciar_fondeo.bat.
+echo Listo: Guardian, Minero, Contador, Vigia, Sombra, Explorador, Estratega, Mecanico, Respaldo, Panel, Auditor, Archivista, Profesor, Abogado del diablo, Estacional, Analista COT, Calendario de resultados y Aurum en marcha. Abre panel.html para ver todo. Cuenta de fondeo: iniciar_fondeo.bat.

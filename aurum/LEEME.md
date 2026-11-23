@@ -1,4 +1,4 @@
-# Aurum 1.5 — equipo de bots de trading
+# Aurum 1.6 — equipo de bots de trading
 
 Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el filtro anti-suerte:
 
@@ -55,6 +55,14 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 | **Profesor** 🎓 | `profesor.py` | Cada domingo: vivo vs backtest con margen de error ("ventaja confirmada", "vigilar", "deterioro probable"), qué contexto le sienta mejor a cada estrategia, y lo guarda en `profesor_lecciones.md`. Propone, no cambia nada solo |
 | **Abogado del diablo** 😈 | `abogado_diablo.py` | Cada domingo intenta romper las estrategias activas y las candidatas: costos ×2 y ×3, sin las 5 mejores operaciones, parámetros vecinos, 4 periodos, bootstrap. Veredicto RESISTE / DUDOSA / FRÁGIL en `abogado_reporte.md` |
 
+## El equipo (fase 7: ejecución y análisis)
+| Bot | Archivo | Qué hace |
+|---|---|---|
+| **Ejecutor inteligente** ⚡ | `ejecutor.py` (dentro de Aurum) | No entra si el spread es más de 2× lo normal (típico en el *rollover* de las 17:00 de Nueva York, cuando abren las velas diarias): espera hasta 3 h a que baje. Si el broker recotiza, reintenta hasta 3 veces moviendo SL y TP con el precio para que el riesgo siga exacto |
+| **Estacional** 📅 | `estacional.py` | Patrones por mes, día de la semana y cambio de mes en cada mercado, con su fuerza estadística. Nota del mes los lunes. Solo informa: con 5 años casi todo es "evidencia débil" |
+| **Analista COT** 🐂🐻 | `analista_cot.py` | Cada sábado lee el informe oficial de la CFTC: cómo están posicionados los grandes especuladores en oro, plata, petróleo, índices, bitcoin y divisas, y avisa de extremos (percentil 3 años). Contexto, no señal |
+| **Calendario de resultados** 🏢 | `calendario_resultados.py` | Avisa cuándo reportan NVIDIA, Apple, Microsoft, Amazon, Alphabet, Meta, Tesla, Broadcom... y te marca si tienes posiciones en Nasdaq/S&P la víspera (riesgo de salto de precio) |
+
 ### Cómo conectar una cuenta de fondeo (cuando la compres)
 1. Instala el **MetaTrader 5 de la empresa de fondeo** (es un segundo programa, aparte del de Axi) e inicia sesión en el reto.
 2. Copia `copiador_ejemplo.json` como `copiador_fondeo1.json` y rellena: ruta del `terminal`, número de `cuenta`, nombres de los símbolos de esa empresa (`mapa_simbolos`), y las **reglas exactas** del reto en `fondeo` y `metas`.
@@ -79,7 +87,7 @@ Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el fil
 **No compartas `telegram.json` con nadie** (contiene la llave de tu bot).
 
 ## Arrancar
-Doble clic en **`INICIAR_TODO.bat`**: se abren 15 ventanas (Guardián, Minero, Contador, Vigía, Sombra, Explorador, Estratega, Mecánico, Respaldo, Panel, Auditor, Archivista, Profesor, Abogado del diablo y Aurum). La primera vez el Minero tarda ~1 minuto en llenar `datos.db` y el Explorador hará su primera búsqueda (unos minutos). Si alguno se cae, se reinicia solo a los 15 segundos. **Deja las ventanas abiertas** (puedes minimizarlas) y que la PC no se suspenda.
+Doble clic en **`INICIAR_TODO.bat`**: se abren 18 ventanas (Guardián, Minero, Contador, Vigía, Sombra, Explorador, Estratega, Mecánico, Respaldo, Panel, Auditor, Archivista, Profesor, Abogado del diablo, Estacional, Analista COT, Calendario de resultados y Aurum). La primera vez el Minero tarda ~1 minuto en llenar `datos.db` y el Explorador hará su primera búsqueda (unos minutos). Si alguno se cae, se reinicia solo a los 15 segundos. **Deja las ventanas abiertas** (puedes minimizarlas) y que la PC no se suspenda.
 (Manual: `python guardian.py`, `python contador.py`, `python aurum.py` en ventanas separadas.)
 
 ### Si el Guardián bloquea

@@ -43,11 +43,15 @@ def contexto_de(ev, vigia, metas):
             "factor_meta": metas.get("factor_riesgo", 1.0), "hora": t.hour, "dia": DIAS[t.weekday()]}
 
 
-def guardar(regs):
-    con = sqlite3.connect(RUTA_DB)
+def crear_tabla(con):
     con.execute("""CREATE TABLE IF NOT EXISTS contexto (posicion INTEGER PRIMARY KEY, hora_utc TEXT, estrategia TEXT, simbolo TEXT,
                    direccion TEXT, regimen TEXT, volatilidad TEXT, atr_ratio REAL, tendencia_20d TEXT, vix REAL, precaucion INTEGER,
                    factor_meta REAL, hora INTEGER, dia TEXT)""")
+
+
+def guardar(regs):
+    con = sqlite3.connect(RUTA_DB)
+    crear_tabla(con)
     con.executemany("""INSERT OR REPLACE INTO contexto VALUES (:posicion,:hora_utc,:estrategia,:simbolo,:direccion,:regimen,:volatilidad,
                        :atr_ratio,:tendencia_20d,:vix,:precaucion,:factor_meta,:hora,:dia)""", regs)
     con.commit()
@@ -56,6 +60,7 @@ def guardar(regs):
 
 def escribir_diario():
     con = sqlite3.connect(RUTA_DB)
+    crear_tabla(con)
     try:
         filas = con.execute("""SELECT c.hora_utc, c.estrategia, c.simbolo, c.direccion, c.regimen, c.volatilidad, c.vix, c.precaucion,
                                       o.neto, o.R, o.cerrada FROM contexto c LEFT JOIN operaciones o ON o.posicion = c.posicion

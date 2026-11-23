@@ -1,4 +1,4 @@
-# Aurum 1.6 — equipo de bots de trading
+# Aurum 1.7 — equipo de bots de trading
 
 Opera solo, 24/5, en tu **demo MT5 10076749** las estrategias que pasaron el filtro anti-suerte:
 

@@ -88,6 +88,53 @@ def poner_sl_emergencia(p, cfg):
     enviar(f"⚠️ {p.symbol} #{p.ticket} no tenía Stop Loss. {'Le puse' if ok else 'NO pude poner'} SL de emergencia en {sl} (riesgo ≈ ${riesgo:,.0f}).", "Guardián")
 
 
+def paso(info, cfg, g, est):
+    """Una revisión completa del Guardián (se puede probar sin el bucle)."""
+    hoy = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    if est["dia"] != hoy:  # nuevo día UTC
+        est["dia"], est["balance_inicio_dia"] = hoy, info.balance
+        if os.path.exists(RUTA_ALTO) and open(RUTA_ALTO).read().startswith("DIARIO"):
+            os.remove(RUTA_ALTO)
+            enviar("🟢 Nuevo día: quito el bloqueo diario. Aurum puede volver a operar.", "Guardián")
+    est["pico_equity"] = max(est["pico_equity"], info.equity)
+
+    # 1) posiciones sin SL
+    for p in mt5.positions_get() or []:
+        if not p.sl:
+            poner_sl_emergencia(p, cfg)
+
+    # 2) pérdida del día
+    perdida_dia = (info.equity - est["balance_inicio_dia"]) / est["balance_inicio_dia"]
+    if perdida_dia <= -cfg["perdida_diaria_max"] and not os.path.exists(RUTA_ALTO):
+        with open(RUTA_ALTO, "w") as f:
+            f.write(f"DIARIO {hoy} pérdida {perdida_dia:.2%}")
+        cerrar_todo(f"pérdida del día {perdida_dia:.2%} (límite {cfg['perdida_diaria_max']:.0%})")
+
+    # 3) caída desde el máximo
+    caida = 1 - info.equity / est["pico_equity"]
+    if caida >= g["caida_maxima"] and not (os.path.exists(RUTA_ALTO) and open(RUTA_ALTO).read().startswith("TOTAL")):
+        with open(RUTA_ALTO, "w") as f:
+            f.write(f"TOTAL caída {caida:.2%} desde ${est['pico_equity']:,.0f}. Borra este archivo para reanudar.")
+        cerrar_todo(f"caída de {caida:.1%} desde el máximo (límite {g['caida_maxima']:.0%}). Bloqueo TOTAL: revisar con Claude.")
+
+    # 4) y 5) riesgo abierto y lotes anormales
+    riesgos = [(p, riesgo_posicion(p)) for p in mt5.positions_get() or []]
+    total = sum(r or 0 for _, r in riesgos)
+    if total > info.balance * (cfg["riesgo_abierto_max"] + 0.005):
+        clave = f"riesgo_{hoy}_{int(total)}"
+        if clave not in est["avisos"]:
+            est["avisos"][clave] = 1
+            enviar(f"⚠️ Riesgo abierto {total / info.balance:.1%} supera el máximo {cfg['riesgo_abierto_max']:.0%}.", "Guardián")
+    for p, r in riesgos:
+        if r and r > info.balance * cfg["riesgo_por_operacion"] * 2 and f"lote_{p.ticket}" not in est["avisos"]:
+            est["avisos"][f"lote_{p.ticket}"] = 1
+            enviar(f"⚠️ {p.symbol} #{p.ticket} arriesga ${r:,.0f} ({r / info.balance:.1%}), más del doble de lo permitido.", "Guardián")
+
+    guardar(RUTA_ESTADO, est)
+    with open(RUTA_LATIDO, "w") as f:
+        f.write(datetime.now(timezone.utc).isoformat())
+
+
 def main():
     cfg = cargar(RUTA_CONFIG, None)
     g = cfg.get("guardian", {"caida_maxima": 0.10, "intervalo_seg": 10})
@@ -112,49 +159,7 @@ def main():
                 time.sleep(10)
                 continue
             desconectado_desde = None
-            hoy = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-            if est["dia"] != hoy:  # nuevo día UTC
-                est["dia"], est["balance_inicio_dia"] = hoy, info.balance
-                if os.path.exists(RUTA_ALTO) and open(RUTA_ALTO).read().startswith("DIARIO"):
-                    os.remove(RUTA_ALTO)
-                    enviar("🟢 Nuevo día: quito el bloqueo diario. Aurum puede volver a operar.", "Guardián")
-            est["pico_equity"] = max(est["pico_equity"], info.equity)
-
-            # 1) posiciones sin SL
-            for p in mt5.positions_get() or []:
-                if not p.sl:
-                    poner_sl_emergencia(p, cfg)
-
-            # 2) pérdida del día
-            perdida_dia = (info.equity - est["balance_inicio_dia"]) / est["balance_inicio_dia"]
-            if perdida_dia <= -cfg["perdida_diaria_max"] and not os.path.exists(RUTA_ALTO):
-                with open(RUTA_ALTO, "w") as f:
-                    f.write(f"DIARIO {hoy} pérdida {perdida_dia:.2%}")
-                cerrar_todo(f"pérdida del día {perdida_dia:.2%} (límite {cfg['perdida_diaria_max']:.0%})")
-
-            # 3) caída desde el máximo
-            caida = 1 - info.equity / est["pico_equity"]
-            if caida >= g["caida_maxima"] and not (os.path.exists(RUTA_ALTO) and open(RUTA_ALTO).read().startswith("TOTAL")):
-                with open(RUTA_ALTO, "w") as f:
-                    f.write(f"TOTAL caída {caida:.2%} desde ${est['pico_equity']:,.0f}. Borra este archivo para reanudar.")
-                cerrar_todo(f"caída de {caida:.1%} desde el máximo (límite {g['caida_maxima']:.0%}). Bloqueo TOTAL: revisar con Claude.")
-
-            # 4) y 5) riesgo abierto y lotes anormales
-            riesgos = [(p, riesgo_posicion(p)) for p in mt5.positions_get() or []]
-            total = sum(r or 0 for _, r in riesgos)
-            if total > info.balance * (cfg["riesgo_abierto_max"] + 0.005):
-                clave = f"riesgo_{hoy}_{int(total)}"
-                if clave not in est["avisos"]:
-                    est["avisos"][clave] = 1
-                    enviar(f"⚠️ Riesgo abierto {total / info.balance:.1%} supera el máximo {cfg['riesgo_abierto_max']:.0%}.", "Guardián")
-            for p, r in riesgos:
-                if r and r > info.balance * cfg["riesgo_por_operacion"] * 2 and f"lote_{p.ticket}" not in est["avisos"]:
-                    est["avisos"][f"lote_{p.ticket}"] = 1
-                    enviar(f"⚠️ {p.symbol} #{p.ticket} arriesga ${r:,.0f} ({r / info.balance:.1%}), más del doble de lo permitido.", "Guardián")
-
-            guardar(RUTA_ESTADO, est)
-            with open(RUTA_LATIDO, "w") as f:
-                f.write(datetime.now(timezone.utc).isoformat())
+            paso(info, cfg, g, est)
         except Exception as e:
             log(f"Error (sigo vigilando): {e!r}"[:200])
         time.sleep(g.get("intervalo_seg", 10))

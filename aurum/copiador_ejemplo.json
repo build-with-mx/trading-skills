@@ -4,14 +4,15 @@
     "1) Copia este archivo como copiador_fondeo1.json y rellénalo.",
     "2) Instala un SEGUNDO MetaTrader 5 (el de la empresa de fondeo) y pon su ruta en terminal.",
     "3) Si la cuenta es REAL (un reto lo es): permitir_cuenta_real=true Y crea tú AUTORIZO_<cuenta>.txt con la palabra AUTORIZO.",
-    "4) Ajusta 'fondeo' con las reglas EXACTAS de tu empresa y 'metas' con su objetivo y límite."
+    "4) Ajusta 'fondeo' con las reglas EXACTAS de tu empresa y 'metas' con su objetivo y límite.",
+    "Riesgo: 1% por operación (prueba general: en $5k, con 0.5% el lote mínimo del oro no cabe en 1 de cada 5 señales). El Estratega lo baja solo a 0.5% cerca del objetivo o del límite."
   ],
   "nombre": "fondeo1",
   "terminal": "C:\\\\Program Files\\\\EMPRESA MetaTrader 5\\\\terminal64.exe",
   "cuenta": 0,
   "permitir_cuenta_real": false,
-  "riesgo_por_operacion": 0.005,
-  "riesgo_abierto_max": 0.015,
+  "riesgo_por_operacion": 0.01,
+  "riesgo_abierto_max": 0.03,
   "estrategias": [
     "ruptura_asiatica",
     "donchian",
